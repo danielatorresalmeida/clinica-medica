@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Pcientes da Clínica</title>
+</head>
+<body>
+<main>
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>Idade</th>
+    </tr>
+
+    <tr th:each="p:${lista}">
+        <td th:text="${p.nome}"></td>
+        <td th:text="${p.idade}"></td>
+    </tr>
+</table>
+
+<section>
+    <h2>Novo Paciente</h2>
+
+    <form action="/pacientes" method="post">
+        <input type="text" name="nome" placeholder="Nome completo">
+        <input type="number" name="idade" placeholder="Idade">
+        <button type="submit">Adicionar</button>
+    </form>
+</section>
+</main>
+</body>
+</html>
