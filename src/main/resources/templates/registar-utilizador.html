@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registar Utilizador</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<main>
+    <h1>Registar Utilizador</h1>
+
+```
+<nav>
+    <a href="/listagem">Ver listagem</a>
+</nav>
+
+<hr>
+
+<section class="form-card form-unico">
+    <h2>Novo Utilizador</h2>
+
+    <form action="/registo/utilizador" method="post">
+
+        <label>Tipo de utilizador:</label>
+        <select name="tipo" id="tipoUtilizador" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="PACIENTE">Paciente</option>
+            <option value="MEDICO">Médico</option>
+            <option value="SECRETARIA">Secretária</option>
+        </select>
+
+        <label>Nome completo:</label>
+        <input type="text" name="nome" required>
+
+        <label>Email:</label>
+        <input type="email" name="email" required>
+
+        <label>Senha:</label>
+        <input type="password" name="senha" required>
+
+        <label>Data de nascimento:</label>
+        <input type="date" name="dataNascimento" required>
+
+        <label>Telefone:</label>
+        <input type="text" name="telefone" required>
+
+        <label>Endereço:</label>
+        <input type="text" name="endereco" required>
+
+        <div id="campoEspecialidade" class="escondida">
+            <label>Especialidade:</label>
+            <input type="text" name="especialidade">
+        </div>
+
+        <button type="submit">Registar Utilizador</button>
+    </form>
+</section>
+```
+
+</main>
+
+<script th:src="@{/js/script.js}"></script>
+
+</body>
+</html>

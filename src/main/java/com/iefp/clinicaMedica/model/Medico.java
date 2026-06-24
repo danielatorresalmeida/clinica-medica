@@ -9,27 +9,34 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class Paciente {
+public class Medico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String especialidade;
 
     // Composição com Utilizador
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "utilizador_id", referencedColumnName = "id")
     private Utilizador utilizador;
 
-    public Paciente() {
+    public Medico() {
     }
 
-    public Paciente(Long id, Utilizador utilizador) {
+    public Medico(Long id, String especialidade, Utilizador utilizador) {
         this.id = id;
+        this.especialidade = especialidade;
         this.utilizador = utilizador;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getEspecialidade() {
+        return especialidade;
     }
 
     public Utilizador getUtilizador() {
@@ -38,6 +45,10 @@ public class Paciente {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setEspecialidade(String especialidade) {
+        this.especialidade = especialidade;
     }
 
     public void setUtilizador(Utilizador utilizador) {

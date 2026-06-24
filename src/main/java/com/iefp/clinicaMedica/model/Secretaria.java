@@ -9,7 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class Paciente {
+public class Secretaria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +20,10 @@ public class Paciente {
     @JoinColumn(name = "utilizador_id", referencedColumnName = "id")
     private Utilizador utilizador;
 
-    public Paciente() {
+    public Secretaria() {
     }
 
-    public Paciente(Long id, Utilizador utilizador) {
+    public Secretaria(Long id, Utilizador utilizador) {
         this.id = id;
         this.utilizador = utilizador;
     }

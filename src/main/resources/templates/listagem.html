@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listagem</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<main>
+    <h1>Listagem Geral da Clínica Médica</h1>
+
+<nav>
+    <a href="/registar-utilizador">Registar novo utilizador</a>
+</nav>
+
+<div class="tabs">
+    <button type="button" class="tab-botao tab-ativa" onclick="mostrarTab('tab-utilizadores', this)">
+        Utilizadores
+    </button>
+
+    <button type="button" class="tab-botao" onclick="mostrarTab('tab-pacientes', this)">
+        Pacientes
+    </button>
+
+    <button type="button" class="tab-botao" onclick="mostrarTab('tab-medicos', this)">
+        Médicos
+    </button>
+
+    <button type="button" class="tab-botao" onclick="mostrarTab('tab-secretarias', this)">
+        Secretárias
+    </button>
+</div>
+
+<section id="tab-utilizadores" class="tab-conteudo">
+    <h2>Utilizadores</h2>
+
+    <div class="botoes">
+        <button type="button" onclick="destacarNomes()">Destacar nomes</button>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Tipo</th>
+            <th>Data de nascimento</th>
+            <th>Telefone</th>
+            <th>Endereço</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="utilizador : ${utilizadores}">
+            <td th:text="${utilizador.id}"></td>
+            <td class="nome-registo" th:text="${utilizador.nome}"></td>
+            <td th:text="${utilizador.email}"></td>
+            <td th:text="${utilizador.tipo}"></td>
+            <td th:text="${#temporals.format(utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
+            <td th:text="${utilizador.telefone}"></td>
+            <td th:text="${utilizador.endereco}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p class="mensagem-vazia" th:if="${#lists.isEmpty(utilizadores)}">
+        Ainda não existem utilizadores registados.
+    </p>
+</section>
+
+<section id="tab-pacientes" class="tab-conteudo escondida">
+    <h2>Pacientes</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID Paciente</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Data de nascimento</th>
+            <th>Telefone</th>
+            <th>Endereço</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="paciente : ${pacientes}">
+            <td th:text="${paciente.id}"></td>
+            <td class="nome-registo" th:text="${paciente.utilizador.nome}"></td>
+            <td th:text="${paciente.utilizador.email}"></td>
+            <td th:text="${#temporals.format(paciente.utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
+            <td th:text="${paciente.utilizador.telefone}"></td>
+            <td th:text="${paciente.utilizador.endereco}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p class="mensagem-vazia" th:if="${#lists.isEmpty(pacientes)}">
+        Ainda não existem pacientes registados.
+    </p>
+</section>
+
+<section id="tab-medicos" class="tab-conteudo escondida">
+    <h2>Médicos</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID Médico</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Especialidade</th>
+            <th>Telefone</th>
+            <th>Endereço</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="medico : ${medicos}">
+            <td th:text="${medico.id}"></td>
+            <td class="nome-registo" th:text="${medico.utilizador.nome}"></td>
+            <td th:text="${medico.utilizador.email}"></td>
+            <td th:text="${medico.especialidade}"></td>
+            <td th:text="${medico.utilizador.telefone}"></td>
+            <td th:text="${medico.utilizador.endereco}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p class="mensagem-vazia" th:if="${#lists.isEmpty(medicos)}">
+        Ainda não existem médicos registados.
+    </p>
+</section>
+
+<section id="tab-secretarias" class="tab-conteudo escondida">
+    <h2>Secretárias</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID Secretária</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Endereço</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="secretaria : ${secretarias}">
+            <td th:text="${secretaria.id}"></td>
+            <td class="nome-registo" th:text="${secretaria.utilizador.nome}"></td>
+            <td th:text="${secretaria.utilizador.email}"></td>
+            <td th:text="${secretaria.utilizador.telefone}"></td>
+            <td th:text="${secretaria.utilizador.endereco}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p class="mensagem-vazia" th:if="${#lists.isEmpty(secretarias)}">
+        Ainda não existem secretárias registadas.
+    </p>
+</section>
+
+</main>
+
+<script th:src="@{/js/script.js}"></script>
+
+</body>
+</html>
