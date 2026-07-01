@@ -22,5 +22,6 @@ public class ListagemController {
         model.addAttribute("secretarias", listagemService.listarSecretarias());
 
         return "listagem";
+        
     }
 }
