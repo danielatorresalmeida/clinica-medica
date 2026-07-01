@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Acesso Negado</title>
+
+    <!-- Ligação ao CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <main>
+
+        <header>
+            <h1>Acesso Negado</h1>
+            <p>Não tem permissão para aceder a esta página.</p>
+        </header>
+
+        <section class="cartão">
+            <button type="button" onclick="window.location.href='/'">
+                Voltar à Página Principal
+            </button>
+
+            <button type="button" onclick="window.location.href='/logout'">
+                Logout
+            </button>
+        </section>
+
+    </main>
+</body>
+</html>

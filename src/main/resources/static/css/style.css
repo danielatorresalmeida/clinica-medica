@@ -229,4 +229,22 @@ td {
     border: 1px solid #cbd5e1;
 }
 
+/* Caixa com informação do utilizador logado */
+.utilizador-logado {
+    background-color: #e8f2ff;
+    border: 1px solid #b7d4f5;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin: 15px 0;
+}
+
+/* Texto do utilizador dentro do menu */
+.utilizador-menu {
+    background-color: #e8f2ff;
+    color: #004f93;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
 }

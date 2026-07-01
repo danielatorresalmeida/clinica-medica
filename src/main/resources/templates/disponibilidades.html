@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Disponibilidades</title>
+
+    <!-- Ligação ao ficheiro CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <main>
+
+        <!-- Cabeçalho da página -->
+        <header>
+            <h1>Disponibilidades dos Médicos</h1>
+            <p>Consulte e registe os horários disponíveis dos médicos da clínica.</p>
+        </header>
+
+        <!-- Menu com apenas os botões necessários para esta página -->
+        <nav class="menu">
+            <a href="/medicos">Médicos</a>
+            <a href="/disponibilidades" class="ativo">Disponibilidades</a>
+            <a href="/consultas">Consultas</a>
+            <a href="/listagem">Listagem Geral</a>
+            <a href="/logout">Logout</a>
+        </nav>
+
+        <!-- Informação do utilizador logado -->
+<section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
+    <p>
+        Utilizador logado:
+        <strong th:text="${session.utilizadorLogado.nome}"></strong>
+        |
+        Tipo:
+        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
+    </p>
+</section>
+
+        <!-- Secção para registar disponibilidade -->
+        <section class="cartão">
+            <h2>Registar horário de trabalho</h2>
+
+            <!-- Mostra mensagem de erro, caso exista -->
+            <p th:if="${erro}" th:text="${erro}" class="erro"></p>
+
+            <!-- Esta mensagem aparece quando ainda não existem médicos -->
+            <div th:if="${medicos == null or #lists.isEmpty(medicos)}">
+                <p>
+                    Ainda não existem médicos registados. Para criar disponibilidades,
+                    primeiro é necessário registar pelo menos um médico.
+                </p>
+
+                <!-- Botão necessário apenas quando não existem médicos -->
+                <button type="button" onclick="window.location.href='/registar'">
+                    Registar Médico
+                </button>
+            </div>
+
+            <!-- O formulário só aparece se existirem médicos registados -->
+            <form th:if="${medicos != null and !#lists.isEmpty(medicos)}"
+                  action="/disponibilidades"
+                  method="post"
+                  class="formulario">
+
+                <!-- Seleção do médico -->
+                <label for="medico">Médico:</label>
+                <select id="medico" name="medicoId" required>
+                    <option value="">Selecione um médico</option>
+
+                    <!-- Lista de médicos enviada pelo Controller -->
+                    <option th:each="m : ${medicos}"
+                            th:value="${m.id}"
+                            th:text="${m.utilizador.nome + ' - ' + m.especialidade}">
+                    </option>
+                </select>
+
+                <!-- Data de trabalho -->
+                <label for="data">Data de trabalho:</label>
+                <input type="date" id="data" name="data" required>
+
+                <!-- Hora inicial do horário de trabalho -->
+                <label for="horaInicioTrabalho">Hora Início:</label>
+                <input type="time"
+                       id="horaInicioTrabalho"
+                       name="horaInicioTrabalho"
+                       required>
+
+                <!-- Hora final do horário de trabalho -->
+                <label for="horaFimTrabalho">Hora Fim:</label>
+                <input type="time"
+                       id="horaFimTrabalho"
+                       name="horaFimTrabalho"
+                       required>
+
+                <!-- Botão principal da página -->
+                <button type="submit">
+                    Registar Disponibilidade
+                </button>
+
+            </form>
+        </section>
+
+        <!-- Secção da lista de disponibilidades -->
+        <section class="cartão">
+            <h2>Lista de Disponibilidades</h2>
+
+            <!-- Mensagem quando ainda não há disponibilidades -->
+            <p th:if="${disponibilidades == null or #lists.isEmpty(disponibilidades)}">
+                Ainda não existem disponibilidades registadas.
+            </p>
+
+            <!-- A tabela só aparece se existirem disponibilidades -->
+            <table th:if="${disponibilidades != null and !#lists.isEmpty(disponibilidades)}">
+                <thead>
+                    <tr>
+                        <th>Médico</th>
+                        <th>Especialidade</th>
+                        <th>Data</th>
+                        <th>Hora Início</th>
+                        <th>Hora Fim</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!-- Percorre todas as disponibilidades -->
+                    <tr th:each="disponibilidade : ${disponibilidades}">
+
+                        <!-- Nome do médico -->
+                        <td th:text="${disponibilidade.medico.utilizador.nome}"></td>
+
+                        <!-- Especialidade do médico -->
+                        <td th:text="${disponibilidade.medico.especialidade}"></td>
+
+                        <!-- Data formatada -->
+                        <td th:text="${#temporals.format(disponibilidade.data, 'dd/MM/yyyy')}"></td>
+
+                        <!-- Hora inicial formatada -->
+                        <td th:text="${#temporals.format(disponibilidade.horaInicio, 'HH:mm')}"></td>
+
+                        <!-- Hora final formatada -->
+                        <td th:text="${#temporals.format(disponibilidade.horaFim, 'HH:mm')}"></td>
+
+                        <!-- Estado da disponibilidade -->
+                        <td th:text="${disponibilidade.ocupada == true ? 'Ocupada' : 'Disponível'}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+</body>
+</html>

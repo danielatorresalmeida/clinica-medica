@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Principal</title>
+
+    <!-- Ligação ao CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <main>
+
+        <!-- Cabeçalho da página -->
+        <header>
+            <h1>Clínica Médica</h1>
+            <p>Bem-vindo ao sistema de gestão da clínica médica.</p>
+        </header>
+
+        <nav class="menu">
+        <a href="/">Página Principal</a>
+        <a href="/consultas">Consultas</a>
+        <a href="/exames">Exames</a>
+        <a href="/receitas">Receitas</a>
+
+        <!-- Mostra quem está logado -->
+        <span th:if="${session.utilizadorLogado != null}" class="utilizador-menu">
+        <span th:text="${session.utilizadorLogado.nome}"></span>
+        -
+        <span th:text="${session.utilizadorLogado.tipo}"></span>
+        </span>
+
+        <!-- Logout só aparece se houver utilizador logado -->
+        <a th:if="${session.utilizadorLogado != null}" href="/logout">Logout</a>
+
+        <!-- Login só aparece se não houver utilizador logado -->
+        <a th:if="${session.utilizadorLogado == null}" href="/login">Login</a>
+        </nav>
+
+        <!-- Informação do utilizador logado -->
+        <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
+        <p>
+        Utilizador logado:
+        <strong th:text="${session.utilizadorLogado.nome}"></strong>
+        |
+        Tipo:
+        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
+        </p>
+        </section>
+
+        <!-- Conteúdo principal -->
+        <section class="cartão">
+            <h2>Página Principal</h2>
+            <p>Escolha uma opção do menu para navegar pelo sistema.</p>
+        </section>
+
+    </main>
+</body>
+</html>

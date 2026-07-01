@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Médicos</title>
+
+    <!-- Ligação ao CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <main>
+
+        <!-- Cabeçalho da página -->
+        <header>
+            <h1>Médicos</h1>
+            <p>Consulte os médicos registados na clínica.</p>
+        </header>
+
+        <!-- Menu principal -->
+        <nav class="menu">
+            <a href="/">Página Principal</a>
+            <a href="/registar-utilizador">Registar Utilizador</a>
+            <a href="/listagem">Listagem Geral</a>
+            <a href="/medicos" class="ativo">Médicos</a>
+            <a href="/disponibilidades">Disponibilidades</a>
+            <a href="/consultas">Consultas</a>
+            <a href="/exames">Exames</a>
+            <a href="/receitas">Receitas</a>
+            <a href="/logout">Logout</a>
+        </nav>
+
+        <!-- Informação do utilizador logado -->
+        <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
+        <p>
+        Utilizador logado:
+        <strong th:text="${session.utilizadorLogado.nome}"></strong>
+        |
+        Tipo:
+        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
+        </p>
+        </section>
+
+        <!-- Lista de médicos -->
+        <section class="cartão">
+            <h2>Lista de Médicos</h2>
+
+            <!-- Mensagem quando não existem médicos -->
+            <p th:if="${medicos == null or #lists.isEmpty(medicos)}">
+                Ainda não existem médicos registados.
+            </p>
+
+            <!-- Tabela só aparece se existirem médicos -->
+            <table th:if="${medicos != null and !#lists.isEmpty(medicos)}">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Especialidade</th>
+                        <th>Telefone</th>
+                        <th>Endereço</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!-- Percorre todos os médicos -->
+                    <tr th:each="medico : ${medicos}">
+                        <td th:text="${medico.id}"></td>
+                        <td th:text="${medico.utilizador.nome}"></td>
+                        <td th:text="${medico.utilizador.email}"></td>
+                        <td th:text="${medico.especialidade}"></td>
+                        <td th:text="${medico.utilizador.telefone}"></td>
+                        <td th:text="${medico.utilizador.endereco}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+</body>
+</html>

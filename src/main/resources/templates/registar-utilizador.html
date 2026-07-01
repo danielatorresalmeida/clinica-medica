@@ -12,10 +12,20 @@
 <main>
     <h1>Registar Utilizador</h1>
 
-```
 <nav>
     <a href="/listagem">Ver listagem</a>
 </nav>
+
+<!-- Informação do utilizador logado -->
+<section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
+    <p>
+        Utilizador logado:
+        <strong th:text="${session.utilizadorLogado.nome}"></strong>
+        |
+        Tipo:
+        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
+    </p>
+</section>
 
 <hr>
 
@@ -50,15 +60,22 @@
         <label>Endereço:</label>
         <input type="text" name="endereco" required>
 
-        <div id="campoEspecialidade" class="escondida">
-            <label>Especialidade:</label>
-            <input type="text" name="especialidade">
-        </div>
+        <!-- Especialidade do médico -->
+        <label for="especialidade">Especialidade:</label>
+
+        <select id="especialidade" name="especialidade">
+        <option value="">Selecione uma especialidade</option>
+
+        <!-- Lista as especialidades vindas da base de dados -->
+        <option th:each="esp : ${especialidades}"
+                th:value="${esp.nome}"
+                th:text="${esp.nome}">
+        </option>
+    </select>
 
         <button type="submit">Registar Utilizador</button>
     </form>
 </section>
-```
 
 </main>
 

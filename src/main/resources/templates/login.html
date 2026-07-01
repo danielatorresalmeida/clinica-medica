@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <!-- Ligação ao CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <main>
+
+        <!-- Cabeçalho da página -->
+        <header>
+            <h1>Login</h1>
+            <p>Entre no sistema da clínica médica.</p>
+        </header>
+
+        <!-- Formulário de login -->
+        <section class="cartão">
+            <h2>Acesso ao sistema</h2>
+
+            <!-- Mostra mensagem de erro, caso exista -->
+            <p th:if="${erro}" th:text="${erro}" class="erro"></p>
+
+            <form action="/login" method="post" class="formulario">
+
+                <!-- Email do utilizador -->
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <!-- Senha do utilizador -->
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" required>
+
+                <!-- Botão para entrar -->
+                <button type="submit">
+                    Entrar
+                </button>
+
+            </form>
+        </section>
+
+    </main>
+</body>
+</html>

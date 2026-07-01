@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Receitas</title>
+
+    <!-- Ligação ao CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <main>
+
+        <!-- Cabeçalho -->
+        <header>
+            <h1>Receitas</h1>
+            <p>Registe e consulte as receitas emitidas pelos médicos.</p>
+        </header>
+
+        <!-- Menu principal -->
+        <nav class="menu">
+            <a href="/">Página Principal</a>
+            <a href="/consultas">Consultas</a>
+            <a href="/exames">Exames</a>
+            <a href="/receitas" class="ativo">Receitas</a>
+            <a href="/listagem">Listagem Geral</a>
+            <a href="/logout">Logout</a>
+        </nav>
+
+        <!-- Informação do utilizador logado -->
+        <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
+        <p>
+        Utilizador logado:
+        <strong th:text="${session.utilizadorLogado.nome}"></strong>
+        |
+        Tipo:
+        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
+        </p>
+        </section>
+
+        <!-- Formulário para criar receita -->
+        <section class="cartão">
+            <h2>Registar Receita</h2>
+
+            <!-- Mostra erro, se existir -->
+            <p th:if="${erro}" th:text="${erro}" class="erro"></p>
+
+            <!-- Mensagem se não existirem consultas -->
+            <p th:if="${consultas == null or #lists.isEmpty(consultas)}">
+                Ainda não existem consultas marcadas. Primeiro marque uma consulta.
+            </p>
+
+            <!-- Formulário só aparece se existirem consultas -->
+            <form th:if="${consultas != null and !#lists.isEmpty(consultas)}"
+                  action="/receitas"
+                  method="post"
+                  class="formulario">
+
+                <!-- Seleção da consulta -->
+                <label for="consulta">Consulta:</label>
+                <select id="consulta" name="consultaId" required>
+                    <option value="">Selecione uma consulta</option>
+
+                    <option th:each="c : ${consultas}"
+                            th:value="${c.id}"
+                            th:text="${c.paciente.utilizador.nome
+                                      + ' - '
+                                      + c.medico.utilizador.nome
+                                      + ' - '
+                                      + #temporals.format(c.data, 'dd/MM/yyyy')
+                                      + ' às '
+                                      + #temporals.format(c.horaInicio, 'HH:mm')}">
+                    </option>
+                </select>
+
+                <!-- Medicamento -->
+                <label for="medicamento">Medicamento:</label>
+                <input type="text" id="medicamento" name="medicamento" required>
+
+                <!-- Dosagem -->
+                <label for="dosagem">Dosagem:</label>
+                <input type="text" id="dosagem" name="dosagem" required>
+
+                <!-- Instruções -->
+                <label for="instrucoes">Instruções:</label>
+                <textarea id="instrucoes" name="instrucoes" rows="4" required></textarea>
+
+                <!-- Botão para guardar -->
+                <button type="submit">
+                    Registar Receita
+                </button>
+
+            </form>
+        </section>
+
+        <!-- Lista de receitas -->
+        <section class="cartão">
+            <h2>Lista de Receitas</h2>
+
+            <!-- Mensagem se não existirem receitas -->
+            <p th:if="${receitas == null or #lists.isEmpty(receitas)}">
+                Ainda não existem receitas registadas.
+            </p>
+
+            <!-- Tabela só aparece se existirem receitas -->
+            <table th:if="${receitas != null and !#lists.isEmpty(receitas)}">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Médico</th>
+                        <th>Medicamento</th>
+                        <th>Dosagem</th>
+                        <th>Instruções</th>
+                        <th>Data Emissão</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="receita : ${receitas}">
+                        <td th:text="${receita.paciente.utilizador.nome}"></td>
+                        <td th:text="${receita.medico.utilizador.nome}"></td>
+                        <td th:text="${receita.medicamento}"></td>
+                        <td th:text="${receita.dosagem}"></td>
+                        <td th:text="${receita.instrucoes}"></td>
+                        <td th:text="${#temporals.format(receita.dataEmissao, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${receita.estado}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+</body>
+</html>
