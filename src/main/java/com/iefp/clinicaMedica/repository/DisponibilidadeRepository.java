@@ -24,6 +24,9 @@ public interface DisponibilidadeRepository extends JpaRepository<Disponibilidade
     // Lista apenas disponibilidades livres
     List<Disponibilidade> findByOcupadaFalseOrderByDataAscHoraInicioAsc();
 
+    // Lista apenas disponibilidades livres de um médico específico
+    List<Disponibilidade> findByMedico_IdAndOcupadaFalseOrderByDataAscHoraInicioAsc(Long medicoId);
+
     // Verifica se já existe uma disponibilidade igual para o mesmo médico
     Boolean existsByMedico_IdAndDataAndHoraInicioAndHoraFim(
             Long medicoId,
