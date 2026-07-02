@@ -12,20 +12,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class ConsultaController {
 
-    // Serviço das consultas
     private final ConsultaService consultaService;
-
-    // Repositório dos pacientes
     private final PacienteRepository pacienteRepository;
-
-    // Repositório dos médicos
     private final MedicoRepository medicoRepository;
 
-    // Construtor para injetar dependências
     public ConsultaController(
             ConsultaService consultaService,
             PacienteRepository pacienteRepository,
@@ -36,68 +31,64 @@ public class ConsultaController {
         this.medicoRepository = medicoRepository;
     }
 
-    // Mostra a página das consultas
     @GetMapping("/consultas")
     public String listarConsultas(Model model, HttpSession session) {
 
-        // Vai buscar o utilizador logado
         Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
 
-        // Se não houver utilizador logado, volta para o login
         if (utilizador == null) {
             return "redirect:/login";
         }
 
-        // Secretária vê todas as consultas
-        if (utilizador.getTipo().equals("SECRETARIA")) {
+        String tipo = utilizador.getTipo();
+
+        model.addAttribute("tipoUtilizador", tipo);
+
+        // Secretária vê todas as consultas e pode marcar para qualquer paciente
+        if (tipo.equals("SECRETARIA")) {
             model.addAttribute("consultas", consultaService.listarTodas());
             model.addAttribute("pacientes", consultaService.listarPacientes());
             model.addAttribute("disponibilidadesLivres", consultaService.listarDisponibilidadesLivres());
-            model.addAttribute("tipoUtilizador", "SECRETARIA");
             return "consultas";
         }
 
         // Médico vê apenas as suas consultas
-        if (utilizador.getTipo().equals("MEDICO")) {
+        if (tipo.equals("MEDICO")) {
             Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
                     .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
 
             model.addAttribute("consultas", consultaService.listarPorMedico(medico.getId()));
-            model.addAttribute("tipoUtilizador", "MEDICO");
             return "consultas";
         }
 
-        // Paciente vê apenas as suas consultas
-        if (utilizador.getTipo().equals("PACIENTE")) {
+        // Paciente vê apenas as suas consultas e pode marcar consulta para si próprio
+        if (tipo.equals("PACIENTE")) {
             Paciente paciente = pacienteRepository.findByUtilizador_Id(utilizador.getId())
                     .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
 
             model.addAttribute("consultas", consultaService.listarPorPaciente(paciente.getId()));
             model.addAttribute("disponibilidadesLivres", consultaService.listarDisponibilidadesLivres());
-            model.addAttribute("tipoUtilizador", "PACIENTE");
             return "consultas";
         }
 
         return "redirect:/acesso-negado";
     }
 
-    // Marca consulta
     @PostMapping("/consultas")
     public String marcarConsulta(
             @RequestParam(required = false) Long pacienteId,
             @RequestParam Long disponibilidadeId,
             HttpSession session,
-            Model model
+            RedirectAttributes redirectAttributes
     ) {
         try {
-            // Vai buscar o utilizador logado
             Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
 
             if (utilizador == null) {
                 return "redirect:/login";
             }
 
-            // Se for paciente, usa automaticamente o próprio paciente
+            // Paciente marca consulta apenas para si próprio
             if (utilizador.getTipo().equals("PACIENTE")) {
                 Paciente paciente = pacienteRepository.findByUtilizador_Id(utilizador.getId())
                         .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
@@ -106,7 +97,7 @@ public class ConsultaController {
                 return "redirect:/consultas";
             }
 
-            // Se for secretária, pode escolher o paciente no formulário
+            // Secretária pode escolher qualquer paciente
             if (utilizador.getTipo().equals("SECRETARIA")) {
                 consultaService.marcarConsulta(pacienteId, disponibilidadeId);
                 return "redirect:/consultas";
@@ -116,7 +107,7 @@ public class ConsultaController {
             return "redirect:/acesso-negado";
 
         } catch (RuntimeException erro) {
-            model.addAttribute("erro", erro.getMessage());
+            redirectAttributes.addFlashAttribute("erro", erro.getMessage());
             return "redirect:/consultas";
         }
     }

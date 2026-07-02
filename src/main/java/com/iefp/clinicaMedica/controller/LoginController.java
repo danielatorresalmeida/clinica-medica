@@ -53,6 +53,10 @@ public class LoginController {
         session.setAttribute("utilizadorLogado", utilizador);
 
         // Redireciona conforme o tipo de utilizador
+        if (utilizador.getTipo().equals("ADMIN")) {
+            return "redirect:/listagem";
+        }
+
         if (utilizador.getTipo().equals("SECRETARIA")) {
             return "redirect:/listagem";
         }
