@@ -33,13 +33,14 @@ public class Receita {
     // Dosagem do medicamento
     private String dosagem;
 
-    // Instruções de utilização
+    // Instruções da receita
+    @Column(length = 1000)
     private String instrucoes;
 
-    // Data de emissão da receita
+    // Data em que a receita foi emitida
     private LocalDate dataEmissao;
 
-    // Estado da receita
+    // Estado da receita: Registada ou Cancelada
     private String estado;
 
     // Construtor vazio obrigatório para o JPA
