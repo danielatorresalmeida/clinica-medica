@@ -29,14 +29,28 @@ public class ReceitaService {
         return receitaRepository.findAll();
     }
 
+    // Lista receitas de um paciente específico
+    public List<Receita> listarPorPaciente(Long pacienteId) {
+        return receitaRepository.findByPaciente_IdOrderByDataEmissaoDesc(pacienteId);
+    }
+
+    // Lista receitas de um médico específico
+    public List<Receita> listarPorMedico(Long medicoId) {
+        return receitaRepository.findByMedico_IdOrderByDataEmissaoDesc(medicoId);
+    }
+
     // Lista todas as consultas para aparecerem no formulário
     public List<Consulta> listarConsultas() {
         return consultaRepository.findAll();
     }
 
     // Cria uma nova receita associada a uma consulta
-    public void criarReceita(Long consultaId, String medicamento, String dosagem, String instrucoes) {
-
+    public void criarReceita(
+            Long consultaId,
+            String medicamento,
+            String dosagem,
+            String instrucoes
+    ) {
         // Procura a consulta pelo ID
         Consulta consulta = consultaRepository.findById(consultaId)
                 .orElseThrow(() -> new RuntimeException("Consulta não encontrada."));
@@ -44,7 +58,7 @@ public class ReceitaService {
         // Cria a receita
         Receita receita = new Receita();
 
-        // Associa a consulta à receita
+        // Liga a receita à consulta
         receita.setConsulta(consulta);
 
         // Copia o paciente e o médico da consulta

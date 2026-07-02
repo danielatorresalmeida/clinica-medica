@@ -29,6 +29,16 @@ public class ExameService {
         return exameRepository.findAll();
     }
 
+    // Lista exames de um paciente específico
+    public List<Exame> listarPorPaciente(Long pacienteId) {
+        return exameRepository.findByPaciente_IdOrderByDataPedidoDesc(pacienteId);
+    }
+
+    // Lista exames de um médico específico
+    public List<Exame> listarPorMedico(Long medicoId) {
+        return exameRepository.findByMedico_IdOrderByDataPedidoDesc(medicoId);
+    }
+
     // Lista todas as consultas para aparecerem no formulário
     public List<Consulta> listarConsultas() {
         return consultaRepository.findAll();
@@ -44,8 +54,6 @@ public class ExameService {
         // Cria o exame
         Exame exame = new Exame();
 
-        exame.setEstado("Marcado");
-
         // Associa a consulta ao exame
         exame.setConsulta(consulta);
 
@@ -58,6 +66,7 @@ public class ExameService {
         exame.setDescricao(descricao);
         exame.setResultado("Pendente");
         exame.setDataPedido(LocalDate.now());
+        exame.setEstado("Marcado");
 
         // Guarda o exame
         exameRepository.save(exame);
