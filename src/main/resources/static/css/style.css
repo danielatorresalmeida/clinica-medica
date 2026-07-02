@@ -24,23 +24,65 @@ h1 {
 margin-bottom: 20px;
 }
 
-nav {
-margin: 20px 0;
+/* Menu principal */
+.menu {
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+gap: 8px;
+
+background-color: white;
+padding: 14px 16px;
+margin: 20px 0 24px 0;
+
+border-radius: 10px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-nav a {
-display: inline-block;
-background-color: #0b5394;
-color: white;
-padding: 12px 18px;
+/* Links do menu */
+.menu a {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+
+background-color: #eef5fc;
+color: #0b5394;
+
+padding: 9px 15px;
+border: 1px solid #cbd5e1;
+border-radius: 999px;
+
 text-decoration: none;
-border-radius: 6px;
 font-size: 14px;
 font-weight: bold;
+
+transition: 0.2s ease;
 }
 
-nav a:hover {
-background-color: #073763;
+/* Efeito ao passar o rato */
+.menu a:hover {
+background-color: #d9eaf7;
+border-color: #0b5394;
+}
+
+/* Página ativa */
+.menu a.ativo {
+background-color: #0b5394;
+color: white;
+border-color: #0b5394;
+}
+
+/* Logout */
+.menu a.sair {
+background-color: #fee2e2;
+color: #991b1b;
+border-color: #fecaca;
+}
+
+/* Hover do logout */
+.menu a.sair:hover {
+background-color: #fecaca;
+border-color: #991b1b;
 }
 
 section {
@@ -227,24 +269,6 @@ td {
 .tab-botao {
     border-radius: 6px;
     border: 1px solid #cbd5e1;
-}
-
-/* Caixa com informação do utilizador logado */
-.utilizador-logado {
-    background-color: #e8f2ff;
-    border: 1px solid #b7d4f5;
-    padding: 10px 15px;
-    border-radius: 6px;
-    margin: 15px 0;
-}
-
-/* Texto do utilizador dentro do menu */
-.utilizador-menu {
-    background-color: #e8f2ff;
-    color: #004f93;
-    padding: 10px 14px;
-    border-radius: 6px;
-    font-weight: bold;
 }
 
 }

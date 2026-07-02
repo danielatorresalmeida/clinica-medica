@@ -12,6 +12,12 @@ INSERT INTO especialidade (nome) VALUES ('Psiquiatria');
 INSERT INTO especialidade (nome) VALUES ('Ginecologia');
 INSERT INTO especialidade (nome) VALUES ('Medicina Geral');
 
+-- =========================
+-- UTILIZADOR ADMIN
+-- =========================
+
+INSERT INTO utilizador (nome, email, senha, data_nascimento, telefone, endereco, tipo)
+VALUES ('Administrador', 'admin@test.pt', '1234', '1988-01-01', '910000000', 'Rua do Administrador', 'ADMIN');
 
 -- =========================
 -- UTILIZADORES MÉDICOS
@@ -291,7 +297,8 @@ WHERE up.email = 'paciente2@test.pt'
 AND c.data = '2026-07-06'
 AND c.hora_inicio = '11:00:00';
 
-INSERT INTO receita (consulta_id, paciente_id, medico_id, medicamento, dosagem, instrucoes, data_emissao, estado)
+INSERT INTO receita 
+(consulta_id, paciente_id, medico_id, medicamento, dosagem, instrucoes, data_emissao, estado)
 SELECT c.id, c.paciente_id, c.medico_id, 'Amoxicilina', '875mg', 'Receita cancelada pelo médico.', '2026-06-30', 'Cancelada'
 FROM consulta c
 JOIN paciente p ON c.paciente_id = p.id

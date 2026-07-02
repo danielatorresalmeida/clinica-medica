@@ -4,2183 +4,274 @@
 <head>
     <meta charset="UTF-8">
     <title>Listagem</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-
-<body>
-
-
-284b2903-3366-46b2-93d5-dc274c02d2ac.png
-d8e5d142-76ad-443a-b74f-6bfb660d4e0e.png
-f5c39bcb-a2cf-4bff-8b6e-23da55ede8a7.png
-f86ba91b-da2f-4adc-a353-13344337b12e.png
-7c6482f7-075c-4d7e-a333-1b666c1794e2.png
-689269b5-7159-4cbe-9ff0-4163a81b49cf.png
-POdes rever os meus códigos referentes a disponibilidade? Corrigir para eu poder piar e colar?
-
-tenho botões a mais? Como posso melhorar?
-
-ainda está assim
-
-agora podes ajudar-me com os consulta?
-
-
-
-Também deves adicionar o botão **Consultas** no menu da página `disponibilidades.html`:
-
-em que ordem?
-
-Aqui falta um botão para regressar à pagina principaç
-
-assim?
-
-
-
-
-Pasted text(115).txt
-Document
-
-
-PARA A especialidade quero ter uma lista drop-down com todas as especialidades existentes
-
-a25d734a-af07-49cd-8c95-9725ddc0100c.png
-196ca527-8d9a-4d85-952e-32907a4c3377.png
-61371ed5-391d-4887-846b-0cec00316da6.png
-427aa6c2-1a9e-4af8-b51e-baf1fe1e33a2.png
-9f6c586b-df26-4d02-9742-c02363130ceb.png
-a6e6888c-d7e6-42b0-a4f4-3b5085a01be9.png
-b6e6f8f4-2a20-4867-9338-841cd9bc79d2.png
-d653d9ec-09a5-4568-99c5-e4c59d80bb66.png
-b4f847f4-1709-4f28-9af4-64a6c6f26667.png
-76d85ea5-4ed0-4984-bb35-792ae279b1ec.png
-6c5d009c-e421-47a8-abe1-e223cc79009c.png
-140d1ffb-4a1e-429e-a665-b394d51f251c.png
-2efdc690-08f8-43d9-a6c0-4a29d2d046e9.png
-9b9283ca-709a-4c03-8db6-e35910e1f8f7.png
-d7f335a0-41b3-4cee-b395-11e2aee83d32.png
-fc3a91e8-8b0a-4cf8-b10b-e7518066e847.png
-package com.iefp.clinicaMedica.model;
-
-import jakarta.persistence.*;
-
-import java.time.LocalDate;
-
-@Entity
-public class Exame {
-
-    // Identificador único do exame
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    // Consulta associada ao exame
-    @ManyToOne
-    @JoinColumn(name = "consulta_id")
-    private Consulta consulta;
-
-    // Paciente que vai realizar o exame
-    @ManyToOne
-    @JoinColumn(name = "paciente_id")
-    private Paciente paciente;
-
-    // Médico que pediu o exame
-    @ManyToOne
-    @JoinColumn(name = "medico_id")
-    private Medico medico;
-
-    // Tipo de exame, por exemplo: Raio-X, Análises, Ecografia
-    private String tipo;
-
-    // Descrição ou observações do exame
-    private String descricao;
-
-    // Resultado do exame
-    private String resultado;
-
-    // Data em que o exame foi pedido
-    private LocalDate dataPedido;
-
-    // Construtor vazio obrigatório para o JPA
-    public Exame() {
-    }
-
-    // Getters e setters
-    public Long getId() {
-        return id;
-    }
-
-    public Consulta getConsulta() {
-        return consulta;
-    }
-
-    public Paciente getPaciente() {
-        return paciente;
-    }
-
-    public Medico getMedico() {
-        return medico;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public String getResultado() {
-        return resultado;
-    }
-
-    public LocalDate getDataPedido() {
-        return dataPedido;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setConsulta(Consulta consulta) {
-        this.consulta = consulta;
-    }
-
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
-    }
-
-    public void setMedico(Medico medico) {
-        this.medico = medico;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public void setResultado(String resultado) {
-        this.resultado = resultado;
-    }
-
-    public void setDataPedido(LocalDate dataPedido) {
-        this.dataPedido = dataPedido;
-    }
-}
-
-podes rever? estão a aparecer erros:
-
-30976265-e413-4230-bb67-186c85da4c9b.png
-5a0d0178-d970-41e6-b42a-680baec52356.png
-35ade917-1278-4e4e-af77-6641169cacfe.png
-a3f6118f-6d2b-4761-93dc-9ce46a7fde96.png
-58d6a587-790b-4a1d-9ad1-54587ced7e5f.png
-73b0c512-558b-4c20-9402-1bb2857fce68.png
-Tenho estes utilizadores
-
-Quando vou para a página dos médicos não aparecem
-
-A página receitas está igual à pagina exames
-
-
-falta pacientes
-
-falta o log in e o log out
-
-Thought for 16s
-Sim. O erro acontece porque tens botão para:
-
-/logout
-mas ainda não tens nenhum controller com essa rota.
-
-Vamos criar login e logout simples, usando sessão.
-
-1. Atualiza UtilizadorRepository.java
-Abre:
-
-src/main/java/com/iefp/clinicaMedica/repository/UtilizadorRepository.java
-E deixa assim:
-
-package com.iefp.clinicaMedica.repository;
-
-import com.iefp.clinicaMedica.model.Utilizador;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
-
-@Repository
-public interface UtilizadorRepository extends JpaRepository<Utilizador, Long> {
-
-    // Procura um utilizador pelo email e senha
-    Optional<Utilizador> findByEmailAndSenha(String email, String senha);
-}
-2. Cria LoginController.java
-Cria este ficheiro:
-
-src/main/java/com/iefp/clinicaMedica/controller/LoginController.java
-Copia e cola:
-
-package com.iefp.clinicaMedica.controller;
-
-import com.iefp.clinicaMedica.model.Utilizador;
-import com.iefp.clinicaMedica.repository.UtilizadorRepository;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Optional;
-
-@Controller
-public class LoginController {
-
-    // Repositório usado para procurar o utilizador na base de dados
-    private final UtilizadorRepository utilizadorRepository;
-
-    // Construtor para injetar o repositório
-    public LoginController(UtilizadorRepository utilizadorRepository) {
-        this.utilizadorRepository = utilizadorRepository;
-    }
-
-    // Mostra a página de login
-    @GetMapping("/login")
-    public String mostrarLogin() {
-        return "login";
-    }
-
-    // Recebe os dados do formulário de login
-    @PostMapping("/login")
-    public String fazerLogin(
-            @RequestParam String email,
-            @RequestParam String senha,
-            HttpSession session,
-            Model model
-    ) {
-        // Procura utilizador com o email e senha informados
-        Optional<Utilizador> utilizadorEncontrado =
-                utilizadorRepository.findByEmailAndSenha(email, senha);
-
-        // Se não encontrar, volta para o login com erro
-        if (utilizadorEncontrado.isEmpty()) {
-            model.addAttribute("erro", "Email ou senha inválidos.");
-            return "login";
-        }
-
-        // Guarda o utilizador na sessão
-        session.setAttribute("utilizadorLogado", utilizadorEncontrado.get());
-
-        // Depois do login, vai para a listagem geral
-        return "redirect:/listagem";
-    }
-
-    // Faz logout do utilizador
-    @GetMapping("/logout")
-    public String fazerLogout(HttpSession session) {
-
-        // Limpa todos os dados da sessão
-        session.invalidate();
-
-        // Depois do logout, volta para o login
-        return "redirect:/login";
-    }
-}
-3. Cria login.html
-Cria este ficheiro:
-
-src/main/resources/templates/login.html
-Copia e cola:
-
-<!DOCTYPE html>
-
-<html lang="pt" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
 
     <!-- Ligação ao CSS -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
-    <main>
 
-        <!-- Cabeçalho da página -->
-        <header>
-            <h1>Login</h1>
-            <p>Entre no sistema da clínica médica.</p>
-        </header>
+<main>
 
-        <!-- Formulário de login -->
-        <section class="cartão">
-            <h2>Acesso ao sistema</h2>
+    <!-- Cabeçalho da página -->
+    <header>
+        <h1>Listagem Geral da Clínica Médica</h1>
+    </header>
 
-            <!-- Mostra mensagem de erro, caso exista -->
-            <p th:if="${erro}" th:text="${erro}" class="erro"></p>
-
-            <form action="/login" method="post" class="formulario">
-
-                <!-- Email do utilizador -->
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-
-                <!-- Senha do utilizador -->
-                <label for="senha">Senha:</label>
-                <input type="password" id="senha" name="senha" required>
-
-                <!-- Botão para entrar -->
-                <button type="submit">
-                    Entrar
-                </button>
-
-            </form>
-        </section>
-
-    </main>
-</body>
-</html>
-4. Atualiza o HomeController.java
-Se quiseres que a página inicial abra primeiro o login, deixa o teu HomeController.java assim:
-
-package com.iefp.clinicaMedica.controller;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-
-@Controller
-public class HomeController {
-
-    // Página inicial da aplicação
-    @GetMapping("/")
-    public String paginaPrincipal() {
-        return "redirect:/login";
-    }
-}
-Assim, quando abrires:
-
-http://localhost:8080/
-vai direto para:
-
-http://localhost:8080/login
-5. Login com os dados do data.sql
-Como no teu data.sql tens utilizadores com senha 1234, podes entrar com:
-
-Email: medico1@test.pt
-Senha: 1234
-ou:
-
-Email: paciente1@test.pt
-Senha: 1234
-ou:
-
-Email: secretaria1@test.pt
-Senha: 1234
-Depois corre:
-
-mvnw.cmd spring-boot:run
-E testa:
-
-http://localhost:8080/login
-O botão /logout já não vai dar erro 404. Ele vai limpar a sessão e voltar para o login.
-
-
-a9ac6f5a-4168-48b0-85f8-5a9454020cc4.png
-7a1db49c-882c-4b0e-a41a-d88598fdf474.png
-ae365801-b62f-449a-b643-32b30021587f.png
-quando clico no botão voltar À página principal volta para o login....devia ir para a página principal
-
-Thought for 12s
-Sim. Isso acontece porque no teu HomeController provavelmente tens isto:
-
-return "redirect:/login";
-Por isso, quando clicas em Página Principal, ele vai para /, mas / manda-te para /login.
-
-Tens de alterar o HomeController.
-
-HomeController.java corrigido
-Copia e cola:
-
-package com.iefp.clinicaMedica.controller;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-
-@Controller
-public class HomeController {
-
-    // Mostra a página principal da aplicação
-    @GetMapping("/")
-    public String paginaPrincipal() {
-        return "index";
-    }
-}
-Agora o link:
-
-http://localhost:8080/
-vai abrir a página principal, não o login.
-
-Confirma que tens index.html
-O ficheiro tem de estar aqui:
-
-src/main/resources/templates/index.html
-Podes usar este:
-
-<!DOCTYPE html>
-
-<html lang="pt" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Página Principal</title>
-
-    <!-- Ligação ao CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-
-<body>
-    <main>
-
-        <!-- Cabeçalho da página -->
-        <header>
-            <h1>Clínica Médica</h1>
-            <p>Bem-vindo ao sistema de gestão da clínica médica.</p>
-        </header>
-
-        <!-- Menu principal -->
-        <nav class="menu">
-            <a href="/login">Login</a>
-            <a href="/registar-utilizador">Registar Utilizador</a>
-            <a href="/listagem">Listagem Geral</a>
-            <a href="/pacientes">Pacientes</a>
-            <a href="/medicos">Médicos</a>
-            <a href="/secretarias">Secretárias</a>
-            <a href="/disponibilidades">Disponibilidades</a>
-            <a href="/consultas">Consultas</a>
-            <a href="/exames">Exames</a>
-            <a href="/receitas">Receitas</a>
-        </nav>
-
-        <!-- Conteúdo principal -->
-        <section class="cartão">
-            <h2>Página Principal</h2>
-            <p>Escolha uma opção do menu para navegar pelo sistema.</p>
-        </section>
-
-    </main>
-</body>
-</html>
-O botão “Página Principal” fica assim
-Nas outras páginas, deixa:
-
-<button type="button" onclick="window.location.href='/'">
-    Página Principal
-</button>
-ou, se estiver no menu:
-
-<a href="/">Página Principal</a>
-Depois para o servidor e corre outra vez:
-
-mvnw.cmd spring-boot:run
-Agora:
-
-/logout
-deve ir para o login, mas:
-
-/
-deve ir para a página principal.
-
-
-Neste momento, todos os utilizadores têm permissão para ver tudo, falta definir o que cada tipo de utilizador vê. pODES Ajudar-me?
-
-Thought for 42s
-Sim. Neste momento tens login, mas ainda não tens permissões por tipo de utilizador.
-
-A forma mais simples para o teu projeto é fazer isto:
-
-Esconder botões no menu conforme o tipo de utilizador.
-
-Bloquear páginas no backend para o utilizador não conseguir entrar escrevendo o link no browser.
-
-Redirecionar cada tipo de utilizador para uma página adequada depois do login.
-
-Permissões recomendadas
-Tipo	Pode ver
-SECRETARIA	Tudo. Registos, listagem, pacientes, médicos, secretárias, disponibilidades, consultas, exames e receitas
-MEDICO	Consultas, exames, receitas, disponibilidades, médicos e pacientes
-PACIENTE	Consultas, exames, receitas e disponibilidades
-1. Atualiza o LoginController.java
-No método do login, depois desta linha:
-
-session.setAttribute("utilizadorLogado", utilizadorEncontrado.get());
-usa isto:
-
-// Guarda o utilizador encontrado
-Utilizador utilizador = utilizadorEncontrado.get();
-
-// Guarda o utilizador na sessão
-session.setAttribute("utilizadorLogado", utilizador);
-
-// Redireciona conforme o tipo de utilizador
-if (utilizador.getTipo().equals("SECRETARIA")) {
-    return "redirect:/listagem";
-}
-
-if (utilizador.getTipo().equals("MEDICO")) {
-    return "redirect:/consultas";
-}
-
-if (utilizador.getTipo().equals("PACIENTE")) {
-    return "redirect:/consultas";
-}
-
-// Caso o tipo não seja reconhecido
-return "redirect:/login";
-2. Cria AuthInterceptor.java
-Cria este ficheiro:
-
-src/main/java/com/iefp/clinicaMedica/config/AuthInterceptor.java
-Copia e cola:
-
-package com.iefp.clinicaMedica.config;
-
-import com.iefp.clinicaMedica.model.Utilizador;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.web.servlet.HandlerInterceptor;
-
-public class AuthInterceptor implements HandlerInterceptor {
-
-    // Este método corre antes de abrir cada página
-    @Override
-    public boolean preHandle(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Object handler
-    ) throws Exception {
-
-        String caminho = request.getRequestURI();
-        String metodo = request.getMethod();
-
-        // Páginas públicas
-        if (caminho.equals("/")
-                || caminho.equals("/login")
-                || caminho.equals("/registar")
-                || caminho.equals("/registar-utilizador")
-                || caminho.equals("/registo/utilizador")
-                || caminho.equals("/acesso-negado")
-                || caminho.startsWith("/css/")
-                || caminho.startsWith("/h2-console")) {
-            return true;
-        }
-
-        // Permite logout
-        if (caminho.equals("/logout")) {
-            return true;
-        }
-
-        // Vai buscar a sessão atual
-        HttpSession session = request.getSession(false);
-
-        // Se não existir sessão, volta para o login
-        if (session == null || session.getAttribute("utilizadorLogado") == null) {
-            response.sendRedirect("/login");
-            return false;
-        }
-
-        // Vai buscar o utilizador logado
-        Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
-        String tipo = utilizador.getTipo();
-
-        // A secretária pode aceder a tudo
-        if (tipo.equals("SECRETARIA")) {
-            return true;
-        }
-
-        // Permissões do médico
-        if (tipo.equals("MEDICO")) {
-            if (podeMedico(caminho, metodo)) {
-                return true;
-            }
-        }
-
-        // Permissões do paciente
-        if (tipo.equals("PACIENTE")) {
-            if (podePaciente(caminho, metodo)) {
-                return true;
-            }
-        }
-
-        // Se não tiver permissão, vai para acesso negado
-        response.sendRedirect("/acesso-negado");
-        return false;
-    }
-
-    // Define o que o médico pode fazer
-    private boolean podeMedico(String caminho, String metodo) {
-
-        // Médico pode ver estas páginas
-        if (metodo.equals("GET")) {
-            return caminho.equals("/consultas")
-                    || caminho.equals("/exames")
-                    || caminho.equals("/receitas")
-                    || caminho.equals("/disponibilidades")
-                    || caminho.equals("/medicos")
-                    || caminho.equals("/pacientes");
-        }
-
-        // Médico pode criar disponibilidades, exames e receitas
-        if (metodo.equals("POST")) {
-            return caminho.equals("/disponibilidades")
-                    || caminho.equals("/exames")
-                    || caminho.equals("/receitas");
-        }
-
-        return false;
-    }
-
-    // Define o que o paciente pode fazer
-    private boolean podePaciente(String caminho, String metodo) {
-
-        // Paciente pode ver estas páginas
-        if (metodo.equals("GET")) {
-            return caminho.equals("/consultas")
-                    || caminho.equals("/exames")
-                    || caminho.equals("/receitas")
-                    || caminho.equals("/disponibilidades");
-        }
-
-        // Paciente pode marcar consulta
-        if (metodo.equals("POST")) {
-            return caminho.equals("/consultas");
-        }
-
-        return false;
-    }
-}
-3. Cria WebConfig.java
-Cria este ficheiro:
-
-src/main/java/com/iefp/clinicaMedica/config/WebConfig.java
-Copia e cola:
-
-package com.iefp.clinicaMedica.config;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-@Configuration
-public class WebConfig implements WebMvcConfigurer {
-
-    // Regista o interceptor de autenticação
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthInterceptor());
-    }
-}
-4. Cria página de acesso negado
-Cria este ficheiro:
-
-src/main/resources/templates/acesso-negado.html
-Copia e cola:
-
-<!DOCTYPE html>
-
-<html lang="pt" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Acesso Negado</title>
-
-    <!-- Ligação ao CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-
-<body>
-    <main>
-
-        <header>
-            <h1>Acesso Negado</h1>
-            <p>Não tem permissão para aceder a esta página.</p>
-        </header>
-
-        <section class="cartão">
-            <button type="button" onclick="window.location.href='/'">
-                Voltar à Página Principal
-            </button>
-
-            <button type="button" onclick="window.location.href='/logout'">
-                Logout
-            </button>
-        </section>
-
-    </main>
-</body>
-</html>
-E adiciona isto ao HomeController.java:
-
-// Mostra página de acesso negado
-@GetMapping("/acesso-negado")
-public String acessoNegado() {
-    return "acesso-negado";
-}
-5. Menu com botões conforme o tipo de utilizador
-Agora substitui o menu das páginas por este modelo:
-
+<!-- Menu principal com permissões por tipo de utilizador -->
 <nav class="menu">
 
-    <!-- Página principal aparece para todos -->
-    <a href="/">Página Principal</a>
+    <a th:if="${session.utilizadorLogado != null}"
+       href="/">
+        Página Principal
+    </a>
 
-    <!-- Só a secretária pode registar utilizadores -->
-    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'SECRETARIA'}"
+    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'ADMIN'}"
        href="/registar-utilizador">
         Registar Utilizador
     </a>
 
-    <!-- Só a secretária vê a listagem geral -->
-    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'SECRETARIA'}"
+    <a class="ativo"
+       th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
        href="/listagem">
         Listagem Geral
     </a>
 
-    <!-- Secretária e médico podem ver pacientes -->
-    <a th:if="${session.utilizadorLogado != null and (session.utilizadorLogado.tipo == 'SECRETARIA' or session.utilizadorLogado.tipo == 'MEDICO')}"
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
        href="/pacientes">
         Pacientes
     </a>
 
-    <!-- Secretária e médico podem ver médicos -->
-    <a th:if="${session.utilizadorLogado != null and (session.utilizadorLogado.tipo == 'SECRETARIA' or session.utilizadorLogado.tipo == 'MEDICO')}"
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
        href="/medicos">
         Médicos
     </a>
 
-    <!-- Só secretária vê secretárias -->
-    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'SECRETARIA'}"
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
        href="/secretarias">
         Secretárias
     </a>
 
-    <!-- Todos podem ver disponibilidades -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/disponibilidades">
-        Disponibilidades
-    </a>
-
-    <!-- Todos podem ver consultas -->
     <a th:if="${session.utilizadorLogado != null}"
        href="/consultas">
         Consultas
     </a>
 
-    <!-- Todos podem ver exames -->
     <a th:if="${session.utilizadorLogado != null}"
        href="/exames">
         Exames
     </a>
 
-    <!-- Todos podem ver receitas -->
     <a th:if="${session.utilizadorLogado != null}"
        href="/receitas">
         Receitas
     </a>
 
-    <!-- Logout aparece para quem está logado -->
-    <a th:if="${session.utilizadorLogado != null}"
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' 
+               or session.utilizadorLogado.tipo == 'SECRETARIA'
+               or session.utilizadorLogado.tipo == 'MEDICO')}"
+       href="/disponibilidades">
+        Disponibilidades
+    </a>
+
+    <a class="sair"
+       th:if="${session.utilizadorLogado != null}"
        href="/logout">
         Logout
     </a>
 
-    <!-- Login aparece para quem não está logado -->
-    <a th:if="${session.utilizadorLogado == null}"
-       href="/login">
-        Login
-    </a>
-
-</nav>
-Atenção importante
-Isto já impede um paciente de abrir /listagem escrevendo o link no browser.
-
-Mas ainda falta uma melhoria importante: filtrar os dados.
-
-Por exemplo, neste momento, se o paciente abrir /consultas, ele provavelmente vê todas as consultas. O ideal é:
-
-Paciente → vê só as suas consultas, exames e receitas
-Médico → vê só as consultas, exames e receitas dele
-Secretária → vê tudo
-Depois desta parte estar a funcionar, fazemos essa filtragem nos controllers.
-
-
-vamos
-
-Thought for 15s
-Vamos. A seguir vamos fazer a parte mais importante: cada tipo de utilizador só vê os seus próprios dados.
-
-A lógica vai ser esta:
-
-SECRETARIA vê tudo.
-MEDICO vê apenas consultas, exames e receitas dele.
-PACIENTE vê apenas consultas, exames e receitas dele.
-1. Atualiza PacienteRepository.java
-Abre:
-
-src/main/java/com/iefp/clinicaMedica/repository/PacienteRepository.java
-E deixa assim:
-
-package com.iefp.clinicaMedica.repository;
-
-import com.iefp.clinicaMedica.model.Paciente;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
-
-@Repository
-public interface PacienteRepository extends JpaRepository<Paciente, Long> {
-
-    // Procura o paciente através do ID do utilizador associado
-    Optional<Paciente> findByUtilizador_Id(Long utilizadorId);
-}
-2. Atualiza MedicoRepository.java
-Abre:
-
-src/main/java/com/iefp/clinicaMedica/repository/MedicoRepository.java
-E deixa assim:
-
-package com.iefp.clinicaMedica.repository;
-
-import com.iefp.clinicaMedica.model.Medico;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
-
-@Repository
-public interface MedicoRepository extends JpaRepository<Medico, Long> {
-
-    // Procura o médico através do ID do utilizador associado
-    Optional<Medico> findByUtilizador_Id(Long utilizadorId);
-
-    // Vai buscar todas as especialidades existentes
-    @Query("SELECT DISTINCT m.especialidade FROM Medico m WHERE m.especialidade IS NOT NULL")
-    List<String> listarEspecialidades();
-}
-3. Atualiza ConsultaService.java
-Abre:
-
-src/main/java/com/iefp/clinicaMedica/service/ConsultaService.java
-E confirma que tens estes métodos:
-
-// Lista consultas de um paciente específico
-public List<Consulta> listarPorPaciente(Long pacienteId) {
-    return consultaRepository.findByPaciente_IdOrderByDataAscHoraInicioAsc(pacienteId);
-}
-
-// Lista consultas de um médico específico
-public List<Consulta> listarPorMedico(Long medicoId) {
-    return consultaRepository.findByMedico_IdOrderByDataAscHoraInicioAsc(medicoId);
-}
-Se não tiveres, adiciona dentro da classe ConsultaService.
-
-4. Atualiza ConsultaController.java
-Substitui o teu ConsultaController.java por este:
-
-package com.iefp.clinicaMedica.controller;
-
-import com.iefp.clinicaMedica.model.Medico;
-import com.iefp.clinicaMedica.model.Paciente;
-import com.iefp.clinicaMedica.model.Utilizador;
-import com.iefp.clinicaMedica.repository.MedicoRepository;
-import com.iefp.clinicaMedica.repository.PacienteRepository;
-import com.iefp.clinicaMedica.service.ConsultaService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-@Controller
-public class ConsultaController {
-
-    // Serviço das consultas
-    private final ConsultaService consultaService;
-
-    // Repositório dos pacientes
-    private final PacienteRepository pacienteRepository;
-
-    // Repositório dos médicos
-    private final MedicoRepository medicoRepository;
-
-    // Construtor para injetar dependências
-    public ConsultaController(
-            ConsultaService consultaService,
-            PacienteRepository pacienteRepository,
-            MedicoRepository medicoRepository
-    ) {
-        this.consultaService = consultaService;
-        this.pacienteRepository = pacienteRepository;
-        this.medicoRepository = medicoRepository;
-    }
-
-    // Mostra a página das consultas
-    @GetMapping("/consultas")
-    public String listarConsultas(Model model, HttpSession session) {
-
-        // Vai buscar o utilizador logado
-        Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
-
-        // Se não houver utilizador logado, volta para o login
-        if (utilizador == null) {
-            return "redirect:/login";
-        }
-
-        // Secretária vê todas as consultas
-        if (utilizador.getTipo().equals("SECRETARIA")) {
-            model.addAttribute("consultas", consultaService.listarTodas());
-            model.addAttribute("pacientes", consultaService.listarPacientes());
-            model.addAttribute("disponibilidadesLivres", consultaService.listarDisponibilidadesLivres());
-            model.addAttribute("tipoUtilizador", "SECRETARIA");
-            return "consultas";
-        }
-
-        // Médico vê apenas as suas consultas
-        if (utilizador.getTipo().equals("MEDICO")) {
-            Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
-                    .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
-
-            model.addAttribute("consultas", consultaService.listarPorMedico(medico.getId()));
-            model.addAttribute("tipoUtilizador", "MEDICO");
-            return "consultas";
-        }
-
-        // Paciente vê apenas as suas consultas
-        if (utilizador.getTipo().equals("PACIENTE")) {
-            Paciente paciente = pacienteRepository.findByUtilizador_Id(utilizador.getId())
-                    .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
-
-            model.addAttribute("consultas", consultaService.listarPorPaciente(paciente.getId()));
-            model.addAttribute("disponibilidadesLivres", consultaService.listarDisponibilidadesLivres());
-            model.addAttribute("tipoUtilizador", "PACIENTE");
-            return "consultas";
-        }
-
-        return "redirect:/acesso-negado";
-    }
-
-    // Marca consulta
-    @PostMapping("/consultas")
-    public String marcarConsulta(
-            @RequestParam(required = false) Long pacienteId,
-            @RequestParam Long disponibilidadeId,
-            HttpSession session,
-            Model model
-    ) {
-        try {
-            // Vai buscar o utilizador logado
-            Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
-
-            if (utilizador == null) {
-                return "redirect:/login";
-            }
-
-            // Se for paciente, usa automaticamente o próprio paciente
-            if (utilizador.getTipo().equals("PACIENTE")) {
-                Paciente paciente = pacienteRepository.findByUtilizador_Id(utilizador.getId())
-                        .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
-
-                consultaService.marcarConsulta(paciente.getId(), disponibilidadeId);
-                return "redirect:/consultas";
-            }
-
-            // Se for secretária, pode escolher o paciente no formulário
-            if (utilizador.getTipo().equals("SECRETARIA")) {
-                consultaService.marcarConsulta(pacienteId, disponibilidadeId);
-                return "redirect:/consultas";
-            }
-
-            // Médico não marca consulta neste fluxo
-            return "redirect:/acesso-negado";
-
-        } catch (RuntimeException erro) {
-            model.addAttribute("erro", erro.getMessage());
-            return "redirect:/consultas";
-        }
-    }
-}
-5. Atualiza consultas.html
-No teu consultas.html, no formulário de marcar consulta, troca a parte do formulário por esta:
-
-<!-- Formulário para marcar consulta -->
-<section class="cartão">
-    <h2>Marcar Consulta</h2>
-
-    <!-- Mostra mensagem de erro, caso exista -->
-    <p th:if="${erro}" th:text="${erro}" class="erro"></p>
-
-    <!-- Médico não marca consulta aqui -->
-    <p th:if="${tipoUtilizador == 'MEDICO'}">
-        Como médico, pode consultar as suas consultas marcadas.
-    </p>
-
-    <!-- Formulário para secretária e paciente -->
-    <form th:if="${tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'PACIENTE'}"
-          action="/consultas"
-          method="post"
-          class="formulario">
-
-        <!-- A secretária escolhe o paciente -->
-        <div th:if="${tipoUtilizador == 'SECRETARIA'}">
-            <label for="paciente">Paciente:</label>
-            <select id="paciente" name="pacienteId" required>
-                <option value="">Selecione um paciente</option>
-
-                <option th:each="p : ${pacientes}"
-                        th:value="${p.id}"
-                        th:text="${p.utilizador.nome}">
-                </option>
-            </select>
-        </div>
-
-        <!-- O paciente não escolhe outro paciente -->
-        <p th:if="${tipoUtilizador == 'PACIENTE'}">
-            A consulta será marcada para o seu próprio utilizador.
-        </p>
-
-        <!-- Seleção da disponibilidade -->
-        <label for="disponibilidade">Disponibilidade:</label>
-        <select id="disponibilidade" name="disponibilidadeId" required>
-            <option value="">Selecione uma disponibilidade</option>
-
-            <option th:each="d : ${disponibilidadesLivres}"
-                    th:value="${d.id}"
-                    th:text="${d.medico.utilizador.nome
-                              + ' - '
-                              + d.medico.especialidade
-                              + ' - '
-                              + #temporals.format(d.data, 'dd/MM/yyyy')
-                              + ' das '
-                              + #temporals.format(d.horaInicio, 'HH:mm')
-                              + ' às '
-                              + #temporals.format(d.horaFim, 'HH:mm')}">
-            </option>
-        </select>
-
-        <button type="submit">
-            Marcar Consulta
-        </button>
-
-    </form>
-</section>
-Mantém a tabela de consultas como já tens.
-
-Resultado esperado
-Agora:
-
-Secretária entra em /consultas
-Vê todas as consultas
-Pode marcar consulta para qualquer paciente
-Médico entra em /consultas
-Vê apenas as consultas dele
-Não vê formulário para marcar consulta
-Paciente entra em /consultas
-Vê apenas as suas consultas
-Pode marcar consulta apenas para si próprio
-Depois de colares, corre:
-
-mvnw.cmd spring-boot:run
-Testa com:
-
-secretaria1@test.pt / 1234
-medico1@test.pt / 1234
-paciente1@test.pt / 1234
-Depois fazemos a mesma lógica para exames e receitas.
-
-
-af15ba21-e814-42f6-8a34-28567a7bd0e5.png
-
-Thought for 8s
-Sim. O erro é este:
-
-unreachable statement
-Está a acontecer porque tens um return antes desta linha:
-
-return "redirect:/";
-Ou seja, o Java já saiu do método antes de chegar a essa linha. Essa linha nunca vai ser executada.
-
-No teu caso, remove esta parte:
-
-// Depois do login, vai para a página principal
-return "redirect:/";
-Deixa o LoginController.java assim:
-
-package com.iefp.clinicaMedica.controller;
-
-import com.iefp.clinicaMedica.model.Utilizador;
-import com.iefp.clinicaMedica.repository.UtilizadorRepository;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Optional;
-
-@Controller
-public class LoginController {
-
-    // Repositório usado para procurar utilizadores na base de dados
-    private final UtilizadorRepository utilizadorRepository;
-
-    // Construtor para injetar o repositório
-    public LoginController(UtilizadorRepository utilizadorRepository) {
-        this.utilizadorRepository = utilizadorRepository;
-    }
-
-    // Mostra a página de login
-    @GetMapping("/login")
-    public String mostrarLogin() {
-        return "login";
-    }
-
-    // Recebe os dados do formulário de login
-    @PostMapping("/login")
-    public String fazerLogin(
-            @RequestParam String email,
-            @RequestParam String senha,
-            HttpSession session,
-            Model model
-    ) {
-        // Procura o utilizador pelo email e senha
-        Optional<Utilizador> utilizadorEncontrado =
-                utilizadorRepository.findByEmailAndSenha(email, senha);
-
-        // Se não encontrar, volta para o login com erro
-        if (utilizadorEncontrado.isEmpty()) {
-            model.addAttribute("erro", "Email ou senha inválidos.");
-            return "login";
-        }
-
-        // Vai buscar o utilizador encontrado
-        Utilizador utilizador = utilizadorEncontrado.get();
-
-        // Guarda o utilizador na sessão
-        session.setAttribute("utilizadorLogado", utilizador);
-
-        // Se for secretária, vai para a listagem geral
-        if (utilizador.getTipo().equals("SECRETARIA")) {
-            return "redirect:/listagem";
-        }
-
-        // Se for médico, vai para as consultas
-        if (utilizador.getTipo().equals("MEDICO")) {
-            return "redirect:/consultas";
-        }
-
-        // Se for paciente, vai para as consultas
-        if (utilizador.getTipo().equals("PACIENTE")) {
-            return "redirect:/consultas";
-        }
-
-        // Se o tipo não for reconhecido, volta para o login
-        return "redirect:/login";
-    }
-
-    // Faz logout do utilizador
-    @GetMapping("/logout")
-    public String fazerLogout(HttpSession session) {
-
-        // Limpa todos os dados da sessão
-        session.invalidate();
-
-        // Depois do logout, volta para o login
-        return "redirect:/login";
-    }
-}
-Depois corre novamente:
-
-mvnw.cmd spring-boot:run
-O problema era só teres um return "redirect:/"; depois de outro return. Em Java, tudo o que vem depois de um return dentro do mesmo caminho fica inacessível.
-
-
-podemos corrigir isto e ter uma forma de saber que utilizador está logado?
-
-
-3\. Mostrar quem está logado no HTML ------------------------------------ Em cada página onde queres mostrar o utilizador logado, coloca isto por baixo do menu ou dentro do `<header>`: HTML <!-- Informação do utilizador logado --><section class="utilizador-logado" th:if="${session.utilizadorLogado != null}"> <p> Utilizador logado: <strong th:text="${session.utilizadorLogado.nome}"></strong> | Tipo: <strong th:text="${session.utilizadorLogado.tipo}"></strong> </p></section> Exemplo: se entrares como `medico1@test.pt`, vai aparecer: Utilizador logado: Médico 1 | Tipo: MEDICO
-
-370def58-8fb3-4c0e-b460-68668540a088.png
-em quais destes html faz sentido ter a informação do utilizador que está logado atualmente?
-
-Thought for 7s
-Sim. Faz sentido mostrar “Utilizador logado” nas páginas onde o utilizador já está dentro do sistema.
-
-Eu faria assim:
-
-Ficheiro HTML	Mostrar utilizador logado?	Porquê
-index.html	Sim	É a página principal depois de entrar no sistema
-listagem.html	Sim	Página administrativa, importante saber quem está a ver
-consultas.html	Sim	Médico, paciente e secretária veem coisas diferentes
-disponibilidades.html	Sim	Médico/secretária podem registar horários
-exames.html	Sim	Médico, paciente e secretária têm permissões diferentes
-receitas.html	Sim	Mesma lógica dos exames
-medicos.html	Sim	Página de dados internos
-pacientes.html	Sim	Página de dados internos
-registar-utilizador.html	Sim, se só a secretária puder usar	Ajuda a confirmar que quem está a registar é a secretária
-acesso-negado.html	Sim	Mostra quem tentou aceder sem permissão
-login.html	Não	Ainda não existe utilizador logado
-Portanto, não coloques no login.html.
-
-Nos outros podes colocar esta parte logo depois do menu <nav>:
-
-<!-- Informação do utilizador logado -->
-<section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-    <p>
-        Utilizador logado:
-        <strong th:text="${session.utilizadorLogado.nome}"></strong>
-        |
-        Tipo:
-        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-    </p>
-</section>
-Exemplo da ordem correta dentro de uma página:
-
-<header>
-    <h1>Consultas</h1>
-    <p>Marque e consulte as consultas da clínica.</p>
-</header>
-
-<nav class="menu">
-    <a href="/">Página Principal</a>
-    <a href="/consultas" class="ativo">Consultas</a>
-    <a href="/exames">Exames</a>
-    <a href="/receitas">Receitas</a>
-    <a href="/logout">Logout</a>
 </nav>
 
-<!-- Informação do utilizador logado -->
-<section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-    <p>
-        Utilizador logado:
-        <strong th:text="${session.utilizadorLogado.nome}"></strong>
-        |
-        Tipo:
-        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-    </p>
-</section>
-E no style.css, adiciona:
-
-/* Caixa com informação do utilizador logado */
-.utilizador-logado {
-    background-color: #e8f2ff;
-    border: 1px solid #b7d4f5;
-    padding: 10px 15px;
-    border-radius: 6px;
-    margin: 15px 0;
-    color: #004f93;
-}
-Para o teu projeto, eu colocaria primeiro em:
-
-index.html
-listagem.html
-consultas.html
-disponibilidades.html
-exames.html
-receitas.html
-medicos.html
-pacientes.html
-registar-utilizador.html
-acesso-negado.html
-E deixava fora só:
-
-login.html
-
-o me html consultas parece incompleto:
-
-
-<!-- Formulário para marcar consulta -->
-<section class="cartão">
-    <h2>Marcar Consulta</h2>
-
-    <!-- Mostra mensagem de erro, caso exista -->
-    <p th:if="${erro}" th:text="${erro}" class="erro"></p>
-
-    <!-- Médico não marca consulta aqui -->
-    <p th:if="${tipoUtilizador == 'MEDICO'}">
-        Como médico, pode consultar as suas consultas marcadas.
-    </p>
-
-    <!-- Formulário para secretária e paciente -->
-    <form th:if="${tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'PACIENTE'}"
-          action="/consultas"
-          method="post"
-          class="formulario">
-
-        <!-- A secretária escolhe o paciente -->
-        <div th:if="${tipoUtilizador == 'SECRETARIA'}">
-            <label for="paciente">Paciente:</label>
-            <select id="paciente" name="pacienteId" required>
-                <option value="">Selecione um paciente</option>
-
-                <option th:each="p : ${pacientes}"
-                        th:value="${p.id}"
-                        th:text="${p.utilizador.nome}">
-                </option>
-            </select>
-        </div>
-
-        <!-- O paciente não escolhe outro paciente -->
-        <p th:if="${tipoUtilizador == 'PACIENTE'}">
-            A consulta será marcada para o seu próprio utilizador.
+    <!-- Informação do utilizador logado -->
+    <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
+        <p>
+            Utilizador logado:
+            <strong th:text="${session.utilizadorLogado.nome}"></strong>
+            |
+            Tipo:
+            <strong th:text="${session.utilizadorLogado.tipo}"></strong>
         </p>
+    </section>
 
-        <!-- Seleção da disponibilidade -->
-        <label for="disponibilidade">Disponibilidade:</label>
-        <select id="disponibilidade" name="disponibilidadeId" required>
-            <option value="">Selecione uma disponibilidade</option>
+    <!-- Separadores da listagem -->
+    <div class="tabs">
 
-            <option th:each="d : ${disponibilidadesLivres}"
-                    th:value="${d.id}"
-                    th:text="${d.medico.utilizador.nome
-                              + ' - '
-                              + d.medico.especialidade
-                              + ' - '
-                              + #temporals.format(d.data, 'dd/MM/yyyy')
-                              + ' das '
-                              + #temporals.format(d.horaInicio, 'HH:mm')
-                              + ' às '
-                              + #temporals.format(d.horaFim, 'HH:mm')}">
-            </option>
-        </select>
-
-        <button type="submit">
-            Marcar Consulta
+        <button type="button"
+                class="tab-botao tab-ativa"
+                onclick="mostrarTab('tab-utilizadores', this)">
+            Utilizadores
         </button>
 
-    </form>
-</section>
+        <button type="button"
+                class="tab-botao"
+                onclick="mostrarTab('tab-pacientes', this)">
+            Pacientes
+        </button>
 
-Thought for 5s
-Sim, está incompleto porque esse bloco é só a secção do formulário, não é o ficheiro consultas.html inteiro.
+        <button type="button"
+                class="tab-botao"
+                onclick="mostrarTab('tab-medicos', this)">
+            Médicos
+        </button>
 
-Copia e cola este ficheiro completo em:
+        <button type="button"
+                class="tab-botao"
+                onclick="mostrarTab('tab-secretarias', this)">
+            Secretárias
+        </button>
 
-src/main/resources/templates/consultas.html
-<!DOCTYPE html>
-
-<html lang="pt" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Consultas</title>
-
-    <!-- Ligação ao ficheiro CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-
-<body>
-    <main>
-
-        <!-- Cabeçalho da página -->
-        <header>
-            <h1>Consultas</h1>
-            <p>Marque e consulte as consultas da clínica.</p>
-        </header>
-
-        <!-- Menu principal -->
-        <nav class="menu">
-            <a href="/">Página Principal</a>
-
-            <!-- A secretária pode ver a listagem geral -->
-            <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'SECRETARIA'}"
-               href="/listagem">
-                Listagem Geral
-            </a>
-
-            <!-- Secretária e médico podem ver pacientes -->
-            <a th:if="${session.utilizadorLogado != null and (session.utilizadorLogado.tipo == 'SECRETARIA' or session.utilizadorLogado.tipo == 'MEDICO')}"
-               href="/pacientes">
-                Pacientes
-            </a>
-
-            <!-- Secretária e médico podem ver médicos -->
-            <a th:if="${session.utilizadorLogado != null and (session.utilizadorLogado.tipo == 'SECRETARIA' or session.utilizadorLogado.tipo == 'MEDICO')}"
-               href="/medicos">
-                Médicos
-            </a>
-
-            <!-- Todos os utilizadores logados podem ver disponibilidades -->
-            <a th:if="${session.utilizadorLogado != null}"
-               href="/disponibilidades">
-                Disponibilidades
-            </a>
-
-            <!-- Página atual -->
-            <a th:if="${session.utilizadorLogado != null}"
-               href="/consultas"
-               class="ativo">
-                Consultas
-            </a>
-
-            <!-- Todos os utilizadores logados podem ver exames -->
-            <a th:if="${session.utilizadorLogado != null}"
-               href="/exames">
-                Exames
-            </a>
-
-            <!-- Todos os utilizadores logados podem ver receitas -->
-            <a th:if="${session.utilizadorLogado != null}"
-               href="/receitas">
-                Receitas
-            </a>
-
-            <!-- Logout -->
-            <a th:if="${session.utilizadorLogado != null}"
-               href="/logout">
-                Logout
-            </a>
-        </nav>
-
-        <!-- Informação do utilizador logado -->
-        <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-            <p>
-                Utilizador logado:
-                <strong th:text="${session.utilizadorLogado.nome}"></strong>
-                |
-                Tipo:
-                <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-            </p>
-        </section>
-
-        <!-- Formulário para marcar consulta -->
-        <section class="cartão">
-            <h2>Marcar Consulta</h2>
-
-            <!-- Mostra mensagem de erro, caso exista -->
-            <p th:if="${erro}" th:text="${erro}" class="erro"></p>
-
-            <!-- Médico não marca consulta aqui -->
-            <p th:if="${tipoUtilizador == 'MEDICO'}">
-                Como médico, pode consultar as suas consultas marcadas.
-            </p>
-
-            <!-- Mensagem se não existirem disponibilidades livres -->
-            <p th:if="${(tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'PACIENTE') 
-                       and (disponibilidadesLivres == null or #lists.isEmpty(disponibilidadesLivres))}">
-                Ainda não existem disponibilidades livres para marcar consulta.
-            </p>
-
-            <!-- Formulário para secretária e paciente -->
-            <form th:if="${(tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'PACIENTE')
-                         and disponibilidadesLivres != null 
-                         and !#lists.isEmpty(disponibilidadesLivres)}"
-                  action="/consultas"
-                  method="post"
-                  class="formulario">
-
-                <!-- A secretária escolhe o paciente -->
-                <div th:if="${tipoUtilizador == 'SECRETARIA'}">
-                    <label for="paciente">Paciente:</label>
-
-                    <select id="paciente" name="pacienteId" required>
-                        <option value="">Selecione um paciente</option>
-
-                        <option th:each="p : ${pacientes}"
-                                th:value="${p.id}"
-                                th:text="${p.utilizador.nome}">
-                        </option>
-                    </select>
-                </div>
-
-                <!-- O paciente marca consulta para si próprio -->
-                <p th:if="${tipoUtilizador == 'PACIENTE'}">
-                    A consulta será marcada para o seu próprio utilizador.
-                </p>
-
-                <!-- Seleção da disponibilidade -->
-                <label for="disponibilidade">Disponibilidade:</label>
-
-                <select id="disponibilidade" name="disponibilidadeId" required>
-                    <option value="">Selecione uma disponibilidade</option>
-
-                    <option th:each="d : ${disponibilidadesLivres}"
-                            th:value="${d.id}"
-                            th:text="${d.medico.utilizador.nome
-                                      + ' - '
-                                      + d.medico.especialidade
-                                      + ' - '
-                                      + #temporals.format(d.data, 'dd/MM/yyyy')
-                                      + ' das '
-                                      + #temporals.format(d.horaInicio, 'HH:mm')
-                                      + ' às '
-                                      + #temporals.format(d.horaFim, 'HH:mm')}">
-                    </option>
-                </select>
-
-                <!-- Botão para marcar consulta -->
-                <button type="submit">
-                    Marcar Consulta
-                </button>
-
-            </form>
-        </section>
-
-        <!-- Lista de consultas -->
-        <section class="cartão">
-            <h2>Lista de Consultas</h2>
-
-            <!-- Mensagem quando ainda não existem consultas -->
-            <p th:if="${consultas == null or #lists.isEmpty(consultas)}">
-                Ainda não existem consultas marcadas.
-            </p>
-
-            <!-- Tabela só aparece se existirem consultas -->
-            <table th:if="${consultas != null and !#lists.isEmpty(consultas)}">
-                <thead>
-                    <tr>
-                        <th>Paciente</th>
-                        <th>Médico</th>
-                        <th>Especialidade</th>
-                        <th>Data</th>
-                        <th>Hora Início</th>
-                        <th>Hora Fim</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <!-- Percorre todas as consultas enviadas pelo Controller -->
-                    <tr th:each="consulta : ${consultas}">
-
-                        <!-- Nome do paciente -->
-                        <td th:text="${consulta.paciente.utilizador.nome}"></td>
-
-                        <!-- Nome do médico -->
-                        <td th:text="${consulta.medico.utilizador.nome}"></td>
-
-                        <!-- Especialidade do médico -->
-                        <td th:text="${consulta.medico.especialidade}"></td>
-
-                        <!-- Data da consulta -->
-                        <td th:text="${#temporals.format(consulta.data, 'dd/MM/yyyy')}"></td>
-
-                        <!-- Hora de início -->
-                        <td th:text="${#temporals.format(consulta.horaInicio, 'HH:mm')}"></td>
-
-                        <!-- Hora de fim -->
-                        <td th:text="${#temporals.format(consulta.horaFim, 'HH:mm')}"></td>
-
-                        <!-- Estado da consulta -->
-                        <td th:text="${consulta.estado}"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-    </main>
-</body>
-</html>
-No teu style.css, confirma também que tens isto para a informação do utilizador logado:
-
-.utilizador-logado {
-    background-color: #e8f2ff;
-    border: 1px solid #b7d4f5;
-    padding: 10px 15px;
-    border-radius: 6px;
-    margin: 15px 0;
-    color: #004f93;
-}
-Depois guarda e corre:
-
-mvnw.cmd spring-boot:run
-A página deve continuar em:
-
-http://localhost:8080/consultas
-
-<!DOCTYPE html>
-
-<html lang="pt" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Listagem</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-
-<body>
-
-<main>
-<header>
-    <h1>Listagem Geral da Clínica Médica</h1>
-</header>
-
-<!-- Botões principais da página -->
-<section class="botoes">
-    <button type="button" onclick="window.location.href='/'">
-        Página Principal
-    </button>
-
-    <button type="button" onclick="window.location.href='/registar-utilizador'">
-        Registar novo utilizador
-    </button>
-</section>
-
-<div class="tabs">
-    <button type="button" class="tab-botao tab-ativa" onclick="mostrarTab('tab-utilizadores', this)">
-        Utilizadores
-    </button>
-
-    <button type="button" class="tab-botao" onclick="mostrarTab('tab-pacientes', this)">
-        Pacientes
-    </button>
-
-    <button type="button" class="tab-botao" onclick="mostrarTab('tab-medicos', this)">
-        Médicos
-    </button>
-
-    <button type="button" class="tab-botao" onclick="mostrarTab('tab-secretarias', this)">
-        Secretárias
-    </button>
-</div>
-
-<section id="tab-utilizadores" class="tab-conteudo">
-    <h2>Utilizadores</h2>
-
-    <div class="botoes">
-        <button type="button" onclick="destacarNomes()">Destacar nomes</button>
     </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Tipo</th>
-            <th>Data de nascimento</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
+    <!-- TAB UTILIZADORES -->
+    <section id="tab-utilizadores" class="tab-conteudo">
+        <h2>Utilizadores</h2>
 
-        <tbody>
-        <tr th:each="utilizador : ${utilizadores}">
-            <td th:text="${utilizador.id}"></td>
-            <td class="nome-registo" th:text="${utilizador.nome}"></td>
-            <td th:text="${utilizador.email}"></td>
-            <td th:text="${utilizador.tipo}"></td>
-            <td th:text="${#temporals.format(utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
-            <td th:text="${utilizador.telefone}"></td>
-            <td th:text="${utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
+        <div class="botoes">
+            <button type="button" onclick="destacarNomes()">
+                Destacar nomes
+            </button>
+        </div>
 
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(utilizadores)}">
-        Ainda não existem utilizadores registados.
-    </p>
-</section>
+        <p class="mensagem-vazia"
+           th:if="${utilizadores == null or #lists.isEmpty(utilizadores)}">
+            Ainda não existem utilizadores registados.
+        </p>
 
-<section id="tab-pacientes" class="tab-conteudo escondida">
-    <h2>Pacientes</h2>
+        <table th:if="${utilizadores != null and !#lists.isEmpty(utilizadores)}">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Tipo</th>
+                <th>Data de nascimento</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+            </tr>
+            </thead>
 
-    <table>
-        <thead>
-        <tr>
-            <th>ID Paciente</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Data de nascimento</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
+            <tbody>
+            <tr th:each="utilizador : ${utilizadores}">
+                <td th:text="${utilizador.id}"></td>
+                <td class="nome-registo" th:text="${utilizador.nome}"></td>
+                <td th:text="${utilizador.email}"></td>
+                <td th:text="${utilizador.tipo}"></td>
+                <td th:text="${#temporals.format(utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
+                <td th:text="${utilizador.telefone}"></td>
+                <td th:text="${utilizador.endereco}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 
-        <tbody>
-        <tr th:each="paciente : ${pacientes}">
-            <td th:text="${paciente.id}"></td>
-            <td class="nome-registo" th:text="${paciente.utilizador.nome}"></td>
-            <td th:text="${paciente.utilizador.email}"></td>
-            <td th:text="${#temporals.format(paciente.utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
-            <td th:text="${paciente.utilizador.telefone}"></td>
-            <td th:text="${paciente.utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- TAB PACIENTES -->
+    <section id="tab-pacientes" class="tab-conteudo escondida">
+        <h2>Pacientes</h2>
 
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(pacientes)}">
-        Ainda não existem pacientes registados.
-    </p>
-</section>
+        <p class="mensagem-vazia"
+           th:if="${pacientes == null or #lists.isEmpty(pacientes)}">
+            Ainda não existem pacientes registados.
+        </p>
 
-<section id="tab-medicos" class="tab-conteudo escondida">
-    <h2>Médicos</h2>
+        <table th:if="${pacientes != null and !#lists.isEmpty(pacientes)}">
+            <thead>
+            <tr>
+                <th>ID Paciente</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Data de nascimento</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+            </tr>
+            </thead>
 
-    <table>
-        <thead>
-        <tr>
-            <th>ID Médico</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Especialidade</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
+            <tbody>
+            <tr th:each="paciente : ${pacientes}">
+                <td th:text="${paciente.id}"></td>
+                <td class="nome-registo" th:text="${paciente.utilizador.nome}"></td>
+                <td th:text="${paciente.utilizador.email}"></td>
+                <td th:text="${#temporals.format(paciente.utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
+                <td th:text="${paciente.utilizador.telefone}"></td>
+                <td th:text="${paciente.utilizador.endereco}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 
-        <tbody>
-        <tr th:each="medico : ${medicos}">
-            <td th:text="${medico.id}"></td>
-            <td class="nome-registo" th:text="${medico.utilizador.nome}"></td>
-            <td th:text="${medico.utilizador.email}"></td>
-            <td th:text="${medico.especialidade}"></td>
-            <td th:text="${medico.utilizador.telefone}"></td>
-            <td th:text="${medico.utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- TAB MÉDICOS -->
+    <section id="tab-medicos" class="tab-conteudo escondida">
+        <h2>Médicos</h2>
 
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(medicos)}">
-        Ainda não existem médicos registados.
-    </p>
-</section>
+        <p class="mensagem-vazia"
+           th:if="${medicos == null or #lists.isEmpty(medicos)}">
+            Ainda não existem médicos registados.
+        </p>
 
-<section id="tab-secretarias" class="tab-conteudo escondida">
-    <h2>Secretárias</h2>
+        <table th:if="${medicos != null and !#lists.isEmpty(medicos)}">
+            <thead>
+            <tr>
+                <th>ID Médico</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Especialidade</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+            </tr>
+            </thead>
 
-    <table>
-        <thead>
-        <tr>
-            <th>ID Secretária</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
+            <tbody>
+            <tr th:each="medico : ${medicos}">
+                <td th:text="${medico.id}"></td>
+                <td class="nome-registo" th:text="${medico.utilizador.nome}"></td>
+                <td th:text="${medico.utilizador.email}"></td>
+                <td th:text="${medico.especialidade}"></td>
+                <td th:text="${medico.utilizador.telefone}"></td>
+                <td th:text="${medico.utilizador.endereco}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 
-        <tbody>
-        <tr th:each="secretaria : ${secretarias}">
-            <td th:text="${secretaria.id}"></td>
-            <td class="nome-registo" th:text="${secretaria.utilizador.nome}"></td>
-            <td th:text="${secretaria.utilizador.email}"></td>
-            <td th:text="${secretaria.utilizador.telefone}"></td>
-            <td th:text="${secretaria.utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- TAB SECRETÁRIAS -->
+    <section id="tab-secretarias" class="tab-conteudo escondida">
+        <h2>Secretárias</h2>
 
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(secretarias)}">
-        Ainda não existem secretárias registadas.
-    </p>
-</section>
+        <p class="mensagem-vazia"
+           th:if="${secretarias == null or #lists.isEmpty(secretarias)}">
+            Ainda não existem secretárias registadas.
+        </p>
+
+        <table th:if="${secretarias != null and !#lists.isEmpty(secretarias)}">
+            <thead>
+            <tr>
+                <th>ID Secretária</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="secretaria : ${secretarias}">
+                <td th:text="${secretaria.id}"></td>
+                <td class="nome-registo" th:text="${secretaria.utilizador.nome}"></td>
+                <td th:text="${secretaria.utilizador.email}"></td>
+                <td th:text="${secretaria.utilizador.telefone}"></td>
+                <td th:text="${secretaria.utilizador.endereco}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 
 </main>
 
-<script th:src="@{/js/script.js}"></script>
-
-</body>
-</html>
-
-e aqui onde coloco:
-
-
-<!DOCTYPE html>
-
-<html lang="pt" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Listagem</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-
-<body>
-
-<main>
-<header>
-    <h1>Listagem Geral da Clínica Médica</h1>
-</header>
-
-<!-- Botões principais da página -->
-<section class="botoes">
-    <button type="button" onclick="window.location.href='/'">
-        Página Principal
-    </button>
-
-    <button type="button" onclick="window.location.href='/registar-utilizador'">
-        Registar novo utilizador
-    </button>
-</section>
-
-<div class="tabs">
-    <button type="button" class="tab-botao tab-ativa" onclick="mostrarTab('tab-utilizadores', this)">
-        Utilizadores
-    </button>
-
-    <button type="button" class="tab-botao" onclick="mostrarTab('tab-pacientes', this)">
-        Pacientes
-    </button>
-
-    <button type="button" class="tab-botao" onclick="mostrarTab('tab-medicos', this)">
-        Médicos
-    </button>
-
-    <button type="button" class="tab-botao" onclick="mostrarTab('tab-secretarias', this)">
-        Secretárias
-    </button>
-</div>
-
-<section id="tab-utilizadores" class="tab-conteudo">
-    <h2>Utilizadores</h2>
-
-    <div class="botoes">
-        <button type="button" onclick="destacarNomes()">Destacar nomes</button>
-    </div>
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Tipo</th>
-            <th>Data de nascimento</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="utilizador : ${utilizadores}">
-            <td th:text="${utilizador.id}"></td>
-            <td class="nome-registo" th:text="${utilizador.nome}"></td>
-            <td th:text="${utilizador.email}"></td>
-            <td th:text="${utilizador.tipo}"></td>
-            <td th:text="${#temporals.format(utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
-            <td th:text="${utilizador.telefone}"></td>
-            <td th:text="${utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(utilizadores)}">
-        Ainda não existem utilizadores registados.
-    </p>
-</section>
-
-<section id="tab-pacientes" class="tab-conteudo escondida">
-    <h2>Pacientes</h2>
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID Paciente</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Data de nascimento</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="paciente : ${pacientes}">
-            <td th:text="${paciente.id}"></td>
-            <td class="nome-registo" th:text="${paciente.utilizador.nome}"></td>
-            <td th:text="${paciente.utilizador.email}"></td>
-            <td th:text="${#temporals.format(paciente.utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
-            <td th:text="${paciente.utilizador.telefone}"></td>
-            <td th:text="${paciente.utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(pacientes)}">
-        Ainda não existem pacientes registados.
-    </p>
-</section>
-
-<section id="tab-medicos" class="tab-conteudo escondida">
-    <h2>Médicos</h2>
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID Médico</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Especialidade</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="medico : ${medicos}">
-            <td th:text="${medico.id}"></td>
-            <td class="nome-registo" th:text="${medico.utilizador.nome}"></td>
-            <td th:text="${medico.utilizador.email}"></td>
-            <td th:text="${medico.especialidade}"></td>
-            <td th:text="${medico.utilizador.telefone}"></td>
-            <td th:text="${medico.utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(medicos)}">
-        Ainda não existem médicos registados.
-    </p>
-</section>
-
-<section id="tab-secretarias" class="tab-conteudo escondida">
-    <h2>Secretárias</h2>
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID Secretária</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="secretaria : ${secretarias}">
-            <td th:text="${secretaria.id}"></td>
-            <td class="nome-registo" th:text="${secretaria.utilizador.nome}"></td>
-            <td th:text="${secretaria.utilizador.email}"></td>
-            <td th:text="${secretaria.utilizador.telefone}"></td>
-            <td th:text="${secretaria.utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(secretarias)}">
-        Ainda não existem secretárias registadas.
-    </p>
-</section>
-
-</main>
-
-<script th:src="@{/js/script.js}"></script>
-
-</body>
-</html>
-
-Thought for 7s
-Sim. No teu listagem.html, o melhor sítio é logo depois dos botões principais e antes das tabs.
-
-Ou seja, coloca isto depois deste bloco:
-
-<!-- Botões principais da página -->
-<section class="botoes">
-    <button type="button" onclick="window.location.href='/'">
-        Página Principal
-    </button>
-
-    <button type="button" onclick="window.location.href='/registar-utilizador'">
-        Registar novo utilizador
-    </button>
-</section>
-Coloca aqui:
-
-<!-- Informação do utilizador logado -->
-<section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-    <p>
-        Utilizador logado:
-        <strong th:text="${session.utilizadorLogado.nome}"></strong>
-        |
-        Tipo:
-        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-    </p>
-</section>
-Então o início do teu listagem.html fica assim:
-
-<main>
-<header>
-    <h1>Listagem Geral da Clínica Médica</h1>
-</header>
-
-<!-- Botões principais da página -->
-<section class="botoes">
-    <button type="button" onclick="window.location.href='/'">
-        Página Principal
-    </button>
-
-    <button type="button" onclick="window.location.href='/registar-utilizador'">
-        Registar novo utilizador
-    </button>
-</section>
-
-<!-- Informação do utilizador logado -->
-<section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-    <p>
-        Utilizador logado:
-        <strong th:text="${session.utilizadorLogado.nome}"></strong>
-        |
-        Tipo:
-        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-    </p>
-</section>
-
-<div class="tabs">
-    <button type="button" class="tab-botao tab-ativa" onclick="mostrarTab('tab-utilizadores', this)">
-        Utilizadores
-    </button>
-
-    <button type="button" class="tab-botao" onclick="mostrarTab('tab-pacientes', this)">
-        Pacientes
-    </button>
-
-    <button type="button" class="tab-botao" onclick="mostrarTab('tab-medicos', this)">
-        Médicos
-    </button>
-
-    <button type="button" class="tab-botao" onclick="mostrarTab('tab-secretarias', this)">
-        Secretárias
-    </button>
-</div>
-
-<section id="tab-utilizadores" class="tab-conteudo">
-    <h2>Utilizadores</h2>
-
-    <div class="botoes">
-        <button type="button" onclick="destacarNomes()">Destacar nomes</button>
-    </div>
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Tipo</th>
-            <th>Data de nascimento</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="utilizador : ${utilizadores}">
-            <td th:text="${utilizador.id}"></td>
-            <td class="nome-registo" th:text="${utilizador.nome}"></td>
-            <td th:text="${utilizador.email}"></td>
-            <td th:text="${utilizador.tipo}"></td>
-            <td th:text="${#temporals.format(utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
-            <td th:text="${utilizador.telefone}"></td>
-            <td th:text="${utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(utilizadores)}">
-        Ainda não existem utilizadores registados.
-    </p>
-</section>
-
-<section id="tab-pacientes" class="tab-conteudo escondida">
-    <h2>Pacientes</h2>
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID Paciente</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Data de nascimento</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="paciente : ${pacientes}">
-            <td th:text="${paciente.id}"></td>
-            <td class="nome-registo" th:text="${paciente.utilizador.nome}"></td>
-            <td th:text="${paciente.utilizador.email}"></td>
-            <td th:text="${#temporals.format(paciente.utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
-            <td th:text="${paciente.utilizador.telefone}"></td>
-            <td th:text="${paciente.utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(pacientes)}">
-        Ainda não existem pacientes registados.
-    </p>
-</section>
-
-<section id="tab-medicos" class="tab-conteudo escondida">
-    <h2>Médicos</h2>
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID Médico</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Especialidade</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="medico : ${medicos}">
-            <td th:text="${medico.id}"></td>
-            <td class="nome-registo" th:text="${medico.utilizador.nome}"></td>
-            <td th:text="${medico.utilizador.email}"></td>
-            <td th:text="${medico.especialidade}"></td>
-            <td th:text="${medico.utilizador.telefone}"></td>
-            <td th:text="${medico.utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(medicos)}">
-        Ainda não existem médicos registados.
-    </p>
-</section>
-
-<section id="tab-secretarias" class="tab-conteudo escondida">
-    <h2>Secretárias</h2>
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID Secretária</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="secretaria : ${secretarias}">
-            <td th:text="${secretaria.id}"></td>
-            <td class="nome-registo" th:text="${secretaria.utilizador.nome}"></td>
-            <td th:text="${secretaria.utilizador.email}"></td>
-            <td th:text="${secretaria.utilizador.telefone}"></td>
-            <td th:text="${secretaria.utilizador.endereco}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p class="mensagem-vazia" th:if="${#lists.isEmpty(secretarias)}">
-        Ainda não existem secretárias registadas.
-    </p>
-</section>
-
-</main>
-
+<!-- Script das tabs e destaque de nomes -->
 <script th:src="@{/js/script.js}"></script>
 
 </body>

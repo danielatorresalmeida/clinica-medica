@@ -18,18 +18,89 @@
             <p>Consulte os médicos registados na clínica.</p>
         </header>
 
-        <!-- Menu principal -->
-        <nav class="menu">
-            <a href="/">Página Principal</a>
-            <a href="/registar-utilizador">Registar Utilizador</a>
-            <a href="/listagem">Listagem Geral</a>
-            <a href="/medicos" class="ativo">Médicos</a>
-            <a href="/disponibilidades">Disponibilidades</a>
-            <a href="/consultas">Consultas</a>
-            <a href="/exames">Exames</a>
-            <a href="/receitas">Receitas</a>
-            <a href="/logout">Logout</a>
-        </nav>
+<!-- Menu principal com permissões por tipo de utilizador -->
+<nav class="menu">
+
+    <!-- Todos os utilizadores logados -->
+    <a th:if="${session.utilizadorLogado != null}"
+       href="/">
+        Página Principal
+    </a>
+
+    <!-- Apenas ADMIN pode criar utilizadores -->
+    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'ADMIN'}"
+       href="/registar-utilizador">
+        Registar Utilizador
+    </a>
+
+    <!-- ADMIN e SECRETARIA podem ver a listagem geral -->
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
+       href="/listagem">
+        Listagem Geral
+    </a>
+
+    <!-- ADMIN e SECRETARIA podem ver pacientes -->
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
+       href="/pacientes">
+        Pacientes
+    </a>
+
+    <!-- ADMIN e SECRETARIA podem ver médicos -->
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
+       href="/medicos">
+        Médicos
+    </a>
+
+    <!-- ADMIN e SECRETARIA podem ver secretárias -->
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
+       href="/secretarias">
+        Secretárias
+    </a>
+
+    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver consultas -->
+    <a th:if="${session.utilizadorLogado != null}"
+       href="/consultas">
+        Consultas
+    </a>
+
+    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver exames -->
+    <a th:if="${session.utilizadorLogado != null}"
+       href="/exames">
+        Exames
+    </a>
+
+    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver receitas -->
+    <a th:if="${session.utilizadorLogado != null}"
+       href="/receitas">
+        Receitas
+    </a>
+
+    <!-- ADMIN, SECRETARIA e MÉDICO podem ver disponibilidades -->
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' 
+               or session.utilizadorLogado.tipo == 'SECRETARIA'
+               or session.utilizadorLogado.tipo == 'MEDICO')}"
+       href="/disponibilidades">
+        Disponibilidades
+    </a>
+
+    <!-- Logout para todos os utilizadores logados -->
+    <a th:if="${session.utilizadorLogado != null}"
+       href="/logout">
+        Logout
+    </a>
+
+    <!-- Login só aparece se ninguém estiver logado -->
+    <a th:if="${session.utilizadorLogado == null}"
+       href="/login">
+        Login
+    </a>
+
+</nav>
 
         <!-- Informação do utilizador logado -->
         <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">

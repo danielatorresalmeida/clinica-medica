@@ -18,15 +18,88 @@
             <p>Registe e consulte as receitas emitidas pelos médicos.</p>
         </header>
 
-        <!-- Menu principal -->
-        <nav class="menu">
-            <a href="/">Página Principal</a>
-            <a href="/consultas">Consultas</a>
-            <a href="/exames">Exames</a>
-            <a href="/receitas" class="ativo">Receitas</a>
-            <a href="/listagem">Listagem Geral</a>
-            <a href="/logout">Logout</a>
-        </nav>
+<!-- Menu principal com permissões por tipo de utilizador -->
+<nav class="menu">
+
+    <!-- Todos os utilizadores logados -->
+    <a th:if="${session.utilizadorLogado != null}"
+       href="/">
+        Página Principal
+    </a>
+
+    <!-- Apenas ADMIN pode criar utilizadores -->
+    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'ADMIN'}"
+       href="/registar-utilizador">
+        Registar Utilizador
+    </a>
+
+    <!-- ADMIN e SECRETARIA podem ver a listagem geral -->
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
+       href="/listagem">
+        Listagem Geral
+    </a>
+
+    <!-- ADMIN e SECRETARIA podem ver pacientes -->
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
+       href="/pacientes">
+        Pacientes
+    </a>
+
+    <!-- ADMIN e SECRETARIA podem ver médicos -->
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
+       href="/medicos">
+        Médicos
+    </a>
+
+    <!-- ADMIN e SECRETARIA podem ver secretárias -->
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
+       href="/secretarias">
+        Secretárias
+    </a>
+
+    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver consultas -->
+    <a th:if="${session.utilizadorLogado != null}"
+       href="/consultas">
+        Consultas
+    </a>
+
+    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver exames -->
+    <a th:if="${session.utilizadorLogado != null}"
+       href="/exames">
+        Exames
+    </a>
+
+    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver receitas -->
+    <a class="ativo" th:if="${session.utilizadorLogado != null}" href="/receitas">
+        Receitas
+    </a>
+
+    <!-- ADMIN, SECRETARIA e MÉDICO podem ver disponibilidades -->
+    <a th:if="${session.utilizadorLogado != null and 
+              (session.utilizadorLogado.tipo == 'ADMIN' 
+               or session.utilizadorLogado.tipo == 'SECRETARIA'
+               or session.utilizadorLogado.tipo == 'MEDICO')}"
+       href="/disponibilidades">
+        Disponibilidades
+    </a>
+
+    <!-- Logout para todos os utilizadores logados -->
+    <a th:if="${session.utilizadorLogado != null}"
+       href="/logout">
+        Logout
+    </a>
+
+    <!-- Login só aparece se ninguém estiver logado -->
+    <a th:if="${session.utilizadorLogado == null}"
+       href="/login">
+        Login
+    </a>
+
+</nav>
 
         <!-- Informação do utilizador logado -->
         <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
@@ -109,23 +182,29 @@
                     <tr>
                         <th>Paciente</th>
                         <th>Médico</th>
+                        <th>Especialidade</th>
+                        <th>Data da consulta</th>
+                        <th>Hora</th>
                         <th>Medicamento</th>
                         <th>Dosagem</th>
                         <th>Instruções</th>
-                        <th>Data Emissão</th>
+                        <th>Data de emissão</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr th:each="receita : ${receitas}">
-                        <td th:text="${receita.paciente.utilizador.nome}"></td>
-                        <td th:text="${receita.medico.utilizador.nome}"></td>
-                        <td th:text="${receita.medicamento}"></td>
-                        <td th:text="${receita.dosagem}"></td>
-                        <td th:text="${receita.instrucoes}"></td>
-                        <td th:text="${#temporals.format(receita.dataEmissao, 'dd/MM/yyyy')}"></td>
-                        <td th:text="${receita.estado}"></td>
+                    <tr th:each="r : ${receitas}">
+                        <td th:text="${r.paciente.utilizador.nome}"></td>
+                        <td th:text="${r.medico.utilizador.nome}"></td>
+                        <td th:text="${r.medico.especialidade}"></td>
+                        <td th:text="${#temporals.format(r.consulta.data, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${#temporals.format(r.consulta.horaInicio, 'HH:mm') + ' às ' + #temporals.format(r.consulta.horaFim, 'HH:mm')}"></td>
+                        <td th:text="${r.medicamento}"></td>
+                        <td th:text="${r.dosagem}"></td>
+                        <td th:text="${r.instrucoes}"></td>
+                        <td th:text="${#temporals.format(r.dataEmissao, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${r.estado}"></td>
                     </tr>
                 </tbody>
             </table>
