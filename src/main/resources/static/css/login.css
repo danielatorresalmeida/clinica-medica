@@ -1,0 +1,497 @@
+    :root {
+      --color-page: #f8fbff;
+      --color-card: #ffffff;
+      --color-primary: #0b63b6;
+      --color-primary-dark: #084f93;
+      --color-primary-soft: #e8f4ff;
+      --color-text: #0f172a;
+      --color-muted: #475569;
+      --color-placeholder: #64748b;
+      --color-border: #cbd5e1;
+      --color-border-soft: #e2e8f0;
+      --color-error: #dc2626;
+      --color-error-dark: #991b1b;
+      --color-error-soft: #fee2e2;
+      --color-error-border: #fca5a5;
+      --shadow-card: 0 14px 44px rgba(15, 23, 42, 0.10);
+      --shadow-note: 0 8px 28px rgba(15, 23, 42, 0.08);
+      --radius-card: 28px;
+      --radius-input: 10px;
+      --font-main: Inter, Arial, Helvetica, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: var(--font-main);
+      color: var(--color-text);
+      background: var(--color-page);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .page-shell {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      padding: 84px 24px 112px;
+    }
+
+    .decor {
+      position: absolute;
+      z-index: 0;
+      display: block;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .decor-top-right {
+      top: -88px;
+      right: -20px;
+      width: 420px;
+      height: 420px;
+      background: #dbeafe;
+      opacity: 0.36;
+    }
+
+    .decor-bottom-left {
+      left: -90px;
+      bottom: -126px;
+      width: 476px;
+      height: 476px;
+      background: #dbeafe;
+      opacity: 0.30;
+    }
+
+    .decor-middle-right {
+      right: -18px;
+      bottom: 166px;
+      width: 232px;
+      height: 232px;
+      background: #e0f2fe;
+      opacity: 0.42;
+    }
+
+    .brand-header,
+    .login-area {
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .brand-logo {
+      position: relative;
+      width: 76px;
+      height: 76px;
+      margin-bottom: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #bfdbfe;
+      box-shadow: 0 0 0 10px var(--color-primary-soft);
+    }
+
+    .medical-cross {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      display: block;
+      border-radius: 999px;
+      background: var(--color-primary);
+      transform: translate(-50%, -50%);
+    }
+
+    .medical-cross.vertical {
+      width: 13px;
+      height: 36px;
+    }
+
+    .medical-cross.horizontal {
+      width: 36px;
+      height: 13px;
+    }
+
+    .brand-header h1 {
+      margin: 0;
+      color: var(--color-primary);
+      font-size: 34px;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-header p {
+      margin: 14px 0 0;
+      color: var(--color-muted);
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .login-area {
+      width: min(520px, 100%);
+      margin: 62px auto 0;
+    }
+
+    .login-card {
+      width: 100%;
+      padding: 50px 44px 42px;
+      border: 1.4px solid var(--color-border-soft);
+      border-radius: var(--radius-card);
+      background: var(--color-card);
+      box-shadow: var(--shadow-card);
+    }
+
+    .card-heading h2,
+    .form-intro h3,
+    .login-note h3 {
+      margin: 0;
+      color: var(--color-text);
+    }
+
+    .card-heading h2 {
+      font-size: 28px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .card-heading p {
+      margin: 14px 0 0;
+      color: var(--color-muted);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .login-form {
+      margin-top: 38px;
+    }
+
+    .form-intro h3 {
+      font-size: 19px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .form-intro p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .error-box {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      min-height: 38px;
+      margin: 18px 0 14px;
+      padding: 8px 11px;
+      border: 1px solid var(--color-error-border);
+      border-radius: 9px;
+      background: var(--color-error-soft);
+      color: var(--color-error-dark);
+      font-size: 13.5px;
+      font-weight: 700;
+      line-height: 1.25;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 160ms ease, visibility 160ms ease;
+    }
+
+    body[data-login-error="true"] .error-box,
+    .login-card.is-error .error-box {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .error-icon {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+      border-radius: 50%;
+      color: #ffffff;
+      background: var(--color-error);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .field-group {
+      margin-top: 16px;
+    }
+
+    .field-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--color-text);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .input-control {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 48px;
+      border: 1.4px solid var(--color-border);
+      border-radius: var(--radius-input);
+      background: #ffffff;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .input-control:focus-within {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 4px rgba(11, 99, 182, 0.10);
+    }
+
+    body[data-login-error="true"] .input-control,
+    .login-card.is-error .input-control {
+      border-color: var(--color-error);
+    }
+
+    .input-icon {
+      width: 19px;
+      height: 19px;
+      margin-left: 14px;
+      color: var(--color-placeholder);
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .input-control input {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      padding: 0 14px;
+      border: 0;
+      outline: 0;
+      color: var(--color-text);
+      background: transparent;
+      font-size: 15px;
+    }
+
+    .input-control input::placeholder {
+      color: var(--color-placeholder);
+    }
+
+    .password-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      margin-right: 4px;
+      border: 0;
+      border-radius: 8px;
+      color: var(--color-primary);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .password-toggle:hover,
+    .password-toggle:focus-visible {
+      background: var(--color-primary-soft);
+      outline: 0;
+    }
+
+    .password-toggle svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .submit-button {
+      width: 100%;
+      height: 48px;
+      margin-top: 24px;
+      border: 0;
+      border-radius: var(--radius-input);
+      color: #ffffff;
+      background: var(--color-primary);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(11, 99, 182, 0.22);
+      transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .submit-button:hover,
+    .submit-button:focus-visible {
+      background: var(--color-primary-dark);
+      outline: 0;
+      box-shadow: 0 12px 26px rgba(8, 79, 147, 0.26);
+    }
+
+    .submit-button:active {
+      transform: translateY(1px);
+    }
+
+    .help-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 22px 0 0;
+      color: var(--color-muted);
+      font-size: 14px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .help-line a {
+      color: var(--color-primary);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .help-line a:hover,
+    .help-line a:focus-visible {
+      text-decoration: underline;
+      outline: 0;
+    }
+
+    .login-note {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: min(460px, 100%);
+      margin: 22px auto 0;
+      padding: 16px 18px;
+      border: 1px solid var(--color-border-soft);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: var(--shadow-note);
+      backdrop-filter: blur(12px);
+    }
+
+    .note-icon {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      color: var(--color-primary);
+      background: var(--color-primary-soft);
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .login-note h3 {
+      font-size: 14px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .login-note p {
+      margin: 4px 0 0;
+      color: var(--color-muted);
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 640px) {
+      .page-shell {
+        padding: 44px 18px 52px;
+      }
+
+      .decor-top-right {
+        width: 260px;
+        height: 260px;
+      }
+
+      .decor-bottom-left {
+        width: 280px;
+        height: 280px;
+      }
+
+      .decor-middle-right {
+        display: none;
+      }
+
+      .brand-logo {
+        width: 62px;
+        height: 62px;
+        margin-bottom: 18px;
+        box-shadow: 0 0 0 8px var(--color-primary-soft);
+      }
+
+      .medical-cross.vertical {
+        width: 11px;
+        height: 30px;
+      }
+
+      .medical-cross.horizontal {
+        width: 30px;
+        height: 11px;
+      }
+
+      .brand-header h1 {
+        font-size: 28px;
+      }
+
+      .brand-header p {
+        margin-top: 10px;
+        font-size: 15px;
+      }
+
+      .login-area {
+        margin-top: 38px;
+      }
+
+      .login-card {
+        padding: 34px 22px 30px;
+        border-radius: 22px;
+      }
+
+      .card-heading h2 {
+        font-size: 24px;
+      }
+
+      .card-heading p {
+        font-size: 15px;
+      }
+
+      .login-form {
+        margin-top: 28px;
+      }
+
+      .help-line {
+        display: block;
+      }
+
+      .help-line a {
+        display: inline-block;
+        margin-top: 4px;
+      }
+    }
