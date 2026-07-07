@@ -15,7 +15,6 @@ public class Secretaria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Composição com Utilizador
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "utilizador_id", referencedColumnName = "id")
     private Utilizador utilizador;
