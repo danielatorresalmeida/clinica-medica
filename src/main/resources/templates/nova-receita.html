@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nova Receita | Clínica Médica</title>
+
+    <link rel="stylesheet" th:href="@{/css/listagem.css}" href="/css/listagem.css" />
+</head>
+
+<body>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
+
+        <div class="layout">
+            <header class="topbar">
+                <a class="brand brand-link" th:href="@{/home}" href="/home" aria-label="Ir para a página principal">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
+
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </a>
+
+                <div class="topbar-actions">
+                    <a class="nav-link" th:href="@{/home}" href="/home">Página principal</a>
+                    <a class="nav-link" th:href="@{/receitas}" href="/receitas">Voltar à lista</a>
+                    <a class="nav-link" th:href="@{/logout}" href="/logout">Logout</a>
+                </div>
+            </header>
+
+            <main>
+                <section class="page-heading" aria-labelledby="pageTitle">
+                    <div class="page-heading-text">
+                        <p class="eyebrow">Gestão clínica</p>
+                        <h2 id="pageTitle">Nova receita</h2>
+                        <p>Registe uma receita médica associada a uma consulta existente.</p>
+                    </div>
+                </section>
+
+                <section class="list-card" aria-labelledby="formTitle">
+                    <div class="list-header">
+                        <div>
+                            <h3 id="formTitle">Dados da receita</h3>
+                            <p>Escolha uma consulta e preencha os dados da receita médica.</p>
+                        </div>
+                    </div>
+
+                    <div class="empty-state" th:if="${erro != null}">
+                        <div class="empty-icon" aria-hidden="true">!</div>
+                        <h3>Não foi possível criar a receita</h3>
+                        <p th:text="${erro}">Mensagem de erro.</p>
+                    </div>
+
+                    <form th:action="@{/receitas}" action="/receitas" method="post"
+                          th:if="${consultas != null and !#lists.isEmpty(consultas)}">
+
+                        <div class="form-grid">
+                            <div class="field-group">
+                                <label for="consultaId">Consulta</label>
+
+                                <select id="consultaId" name="consultaId" required>
+                                    <option value="">Selecionar consulta</option>
+
+                                    <option th:each="consulta : ${consultas}"
+                                            th:value="${consulta.id}"
+                                            th:text="${'Consulta #' + consulta.id + ' | ' + consulta.paciente.utilizador.nome + ' | Dr(a). ' + consulta.medico.utilizador.nome}">
+                                        Consulta #1 | Paciente | Médico
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="medicamento">Medicamento</label>
+                                <input id="medicamento"
+                                       name="medicamento"
+                                       type="text"
+                                       placeholder="Exemplo: Paracetamol"
+                                       required />
+                            </div>
+
+                            <div class="field-group">
+                                <label for="dosagem">Dosagem</label>
+                                <input id="dosagem"
+                                       name="dosagem"
+                                       type="text"
+                                       placeholder="Exemplo: 500mg"
+                                       required />
+                            </div>
+
+                            <div class="field-group">
+                                <label for="instrucoes">Instruções</label>
+                                <input id="instrucoes"
+                                       name="instrucoes"
+                                       type="text"
+                                       placeholder="Exemplo: Tomar de 8 em 8 horas"
+                                       required />
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="button button-primary" type="submit">
+                                Registar receita
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="empty-state" th:if="${consultas == null or #lists.isEmpty(consultas)}">
+                        <div class="empty-icon" aria-hidden="true">C</div>
+                        <h3>Não existem consultas disponíveis</h3>
+                        <p>É necessário existir uma consulta antes de registar uma receita.</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
+</body>
+</html>

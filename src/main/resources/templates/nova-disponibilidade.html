@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nova Disponibilidade | Clínica Médica</title>
+
+    <link rel="stylesheet" th:href="@{/css/listagem.css}" href="/css/listagem.css" />
+</head>
+
+<body>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
+
+        <div class="layout">
+            <header class="topbar">
+                <a class="brand brand-link"
+                   th:href="@{/home}"
+                   href="/home"
+                   aria-label="Ir para a página principal">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
+
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </a>
+
+                <div class="topbar-actions">
+                    <a class="nav-link" th:href="@{/home}" href="/home">Página principal</a>
+                    <a class="nav-link" th:href="@{/disponibilidades}" href="/disponibilidades">Voltar à lista</a>
+                    <a class="nav-link" th:href="@{/logout}" href="/logout">Logout</a>
+                </div>
+            </header>
+
+            <main>
+                <section class="page-heading" aria-labelledby="pageTitle">
+                    <div class="page-heading-text">
+                        <p class="eyebrow">Agenda clínica</p>
+                        <h2 id="pageTitle">Nova disponibilidade</h2>
+                        <p>Registe um novo horário disponível para marcação de consultas.</p>
+                    </div>
+                </section>
+
+                <section class="list-card form-card" aria-labelledby="formTitle">
+                    <div class="list-header">
+                        <div>
+                            <h3 id="formTitle">Dados da disponibilidade</h3>
+                            <p>Preencha a data e o intervalo horário disponível.</p>
+                        </div>
+                    </div>
+
+                    <div class="empty-state" th:if="${erro != null}">
+                        <div class="empty-icon" aria-hidden="true">!</div>
+                        <h3>Não foi possível criar a disponibilidade</h3>
+                        <p th:text="${erro}">Mensagem de erro.</p>
+                    </div>
+
+                    <form th:action="@{/disponibilidades}" action="/disponibilidades" method="post">
+                        <div class="form-grid availability-form-grid">
+                            <div class="field-group field-group-full"
+                                 th:if="${tipoUtilizador == 'ADMIN' or tipoUtilizador == 'SECRETARIA'}">
+                                <label for="medicoId">Médico</label>
+
+                                <select id="medicoId" name="medicoId" required>
+                                    <option value="">Selecionar médico</option>
+
+                                    <option th:each="medico : ${medicos}"
+                                            th:value="${medico.id}"
+                                            th:text="${medico.utilizador.nome + ' | ' + medico.especialidade}">
+                                        Médico | Especialidade
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="data">Data</label>
+                                <input id="data" name="data" type="date" required />
+                            </div>
+
+                            <div class="field-group">
+                                <label for="horaInicioTrabalho">Hora de início</label>
+                                <input id="horaInicioTrabalho" name="horaInicioTrabalho" type="time" required />
+                            </div>
+
+                            <div class="field-group">
+                                <label for="horaFimTrabalho">Hora de fim</label>
+                                <input id="horaFimTrabalho" name="horaFimTrabalho" type="time" required />
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="button button-primary" type="submit">
+                                Criar disponibilidade
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
+</body>
+</html>

@@ -1,208 +1,249 @@
 <!DOCTYPE html>
-
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Exames</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exames | Clínica Médica</title>
 
-    <!-- Ligação ao CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/listagem.css}" href="/css/listagem.css" />
 </head>
 
 <body>
-    <main>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
 
-        <!-- Cabeçalho -->
-        <header>
-            <h1>Exames</h1>
-            <p>Registe e consulte os exames pedidos nas consultas.</p>
-        </header>
+        <div class="layout">
+            <header class="topbar">
+                <a class="brand brand-link"
+                   th:href="@{/home}"
+                   href="/home"
+                   aria-label="Ir para a página principal">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
 
-<!-- Menu principal com permissões por tipo de utilizador -->
-<nav class="menu">
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </a>
 
-    <!-- Todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/">
-        Página Principal
-    </a>
+                <div class="topbar-actions">
+                    <a class="nav-link" th:href="@{/home}" href="/home">
+                        Página principal
+                    </a>
 
-    <!-- Apenas ADMIN pode criar utilizadores -->
-    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'ADMIN'}"
-       href="/registar-utilizador">
-        Registar Utilizador
-    </a>
+                    <a class="button button-primary"
+                        th:if="${tipoUtilizador == 'ADMIN' or tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'MEDICO'}"
+                        th:href="@{/exames/novo}"
+                        href="/exames/novo">
+                        Novo exame
+                    </a>
 
-    <!-- ADMIN e SECRETARIA podem ver a listagem geral -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/listagem">
-        Listagem Geral
-    </a>
+                    <a class="nav-link" th:href="@{/logout}" href="/logout">
+                        Logout
+                    </a>
+                </div>
+            </header>
 
-    <!-- ADMIN e SECRETARIA podem ver pacientes -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/pacientes">
-        Pacientes
-    </a>
+            <main>
+                <section class="page-heading" aria-labelledby="pageTitle">
+                    <div class="page-heading-text">
+                        <p class="eyebrow">Gestão clínica</p>
+                        <h2 id="pageTitle">Exames</h2>
+                        <p>Consulte os exames registados, os pacientes associados e os resultados disponíveis.</p>
+                    </div>
+                </section>
 
-    <!-- ADMIN e SECRETARIA podem ver médicos -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/medicos">
-        Médicos
-    </a>
+                <section class="stats-grid" aria-label="Resumo de exames">
+                    <article class="stat-card">
+                        <span>Total de exames</span>
+                        <strong th:text="${exames != null ? #lists.size(exames) : 0}">0</strong>
+                    </article>
 
-    <!-- ADMIN e SECRETARIA podem ver secretárias -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/secretarias">
-        Secretárias
-    </a>
+                    <article class="stat-card">
+                        <span>Área</span>
+                        <strong>Exames</strong>
+                    </article>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver consultas -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/consultas">
-        Consultas
-    </a>
+                    <article class="stat-card">
+                        <span>Estado</span>
+                        <strong>Registados</strong>
+                    </article>
+                </section>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver exames -->
-    <a class="ativo"
-       th:if="${session.utilizadorLogado != null and 
-          (session.utilizadorLogado.tipo == 'ADMIN' 
-           or session.utilizadorLogado.tipo == 'SECRETARIA'
-           or session.utilizadorLogado.tipo == 'MEDICO')}"
-        href="/disponibilidades">
-        Disponibilidades
-</a>
+                <section id="novoExame"
+                         class="list-card"
+                         th:if="${tipoUtilizador == 'ADMIN' or tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'MEDICO'}"
+                         aria-labelledby="formTitle">
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver receitas -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/receitas">
-        Receitas
-    </a>
+                    <div class="list-header">
+                        <div>
+                            <h3 id="formTitle">Novo exame</h3>
+                            <p>Escolha uma consulta e preencha os dados do exame.</p>
+                        </div>
+                    </div>
 
-    <!-- ADMIN, SECRETARIA e MÉDICO podem ver disponibilidades -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' 
-               or session.utilizadorLogado.tipo == 'SECRETARIA'
-               or session.utilizadorLogado.tipo == 'MEDICO')}"
-       href="/disponibilidades">
-        Disponibilidades
-    </a>
+                    <div class="empty-state" th:if="${erro != null}">
+                        <div class="empty-icon" aria-hidden="true">!</div>
+                        <h3>Não foi possível criar o exame</h3>
+                        <p th:text="${erro}">Mensagem de erro.</p>
+                    </div>
 
-    <!-- Logout para todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/logout">
-        Logout
-    </a>
+                    <form th:action="@{/exames}"
+                          action="/exames"
+                          method="post"
+                          th:if="${consultas != null and !#lists.isEmpty(consultas)}">
 
-    <!-- Login só aparece se ninguém estiver logado -->
-    <a th:if="${session.utilizadorLogado == null}"
-       href="/login">
-        Login
-    </a>
+                        <div class="form-grid">
+                            <div class="field-group">
+                                <label for="consultaId">Consulta</label>
 
-</nav>
+                                <select id="consultaId" name="consultaId" required>
+                                    <option value="">Selecionar consulta</option>
 
-        <!-- Informação do utilizador logado -->
-        <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-            <p>
-        Utilizador logado:
-        <strong th:text="${session.utilizadorLogado.nome}"></strong>
-        |
-        Tipo:
-        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-            </p>
-        </section>
+                                    <option th:each="consulta : ${consultas}"
+                                            th:value="${consulta.id}"
+                                            th:text="${'Consulta #' + consulta.id + ' | ' + consulta.paciente.utilizador.nome + ' | Dr(a). ' + consulta.medico.utilizador.nome}">
+                                        Consulta #1 | Paciente | Médico
+                                    </option>
+                                </select>
+                            </div>
 
-        <!-- Formulário para criar exame -->
-        <section class="cartão">
-            <h2>Registar Exame</h2>
+                            <div class="field-group">
+                                <label for="tipo">Tipo de exame</label>
+                                <input id="tipo"
+                                       name="tipo"
+                                       type="text"
+                                       placeholder="Exemplo: Raio-X, Análises, Ecografia"
+                                       required />
+                            </div>
 
-            <!-- Mostra erro, se existir -->
-            <p th:if="${erro}" th:text="${erro}" class="erro"></p>
+                            <div class="field-group field-group-full">
+                                <label for="descricao">Descrição</label>
+                                <input id="descricao"
+                                       name="descricao"
+                                       type="text"
+                                       placeholder="Observações ou detalhes do exame"
+                                       required />
+                            </div>
+                        </div>
 
-            <!-- Mensagem se não existirem consultas -->
-            <p th:if="${consultas == null or #lists.isEmpty(consultas)}">
-                Ainda não existem consultas marcadas. Primeiro marque uma consulta.
-            </p>
+                        <button class="button button-primary" type="submit">
+                            Registar exame
+                        </button>
+                    </form>
 
-            <!-- Formulário só aparece se existirem consultas -->
-            <form th:if="${consultas != null and !#lists.isEmpty(consultas)}"
-                  action="/exames"
-                  method="post"
-                  class="formulario">
+                    <div class="empty-state" th:if="${consultas == null or #lists.isEmpty(consultas)}">
+                        <div class="empty-icon" aria-hidden="true">C</div>
+                        <h3>Não existem consultas disponíveis</h3>
+                        <p>É necessário existir uma consulta antes de registar um exame.</p>
+                    </div>
+                </section>
 
-                <!-- Seleção da consulta -->
-                <label for="consulta">Consulta:</label>
-                <select id="consulta" name="consultaId" required>
-                    <option value="">Selecione uma consulta</option>
+                <section class="list-card exames-card" aria-labelledby="listTitle">
+                    <div class="list-header">
+                        <div>
+                            <h3 id="listTitle">Lista de exames</h3>
+                            <p>Dados principais dos exames registados no sistema.</p>
+                        </div>
+                    </div>
 
-                    <option th:each="c : ${consultas}"
-                            th:value="${c.id}"
-                            th:text="${c.paciente.utilizador.nome
-                                      + ' - '
-                                      + c.medico.utilizador.nome
-                                      + ' - '
-                                      + #temporals.format(c.data, 'dd/MM/yyyy')
-                                      + ' às '
-                                      + #temporals.format(c.horaInicio, 'HH:mm')}">
-                    </option>
-                </select>
+                    <div class="table-wrap" th:if="${exames != null and !#lists.isEmpty(exames)}">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Exame</th>
+                                    <th>Paciente</th>
+                                    <th>Médico</th>
+                                    <th>Tipo</th>
+                                    <th>Data do pedido</th>
+                                    <th>Estado</th>
+                                    <th>Resultado</th>
+                                </tr>
+                            </thead>
 
-                <!-- Tipo de exame -->
-                <label for="tipo">Tipo de exame:</label>
-                <input type="text" id="tipo" name="tipo" required>
+                            <tbody>
+                                <tr th:each="exame : ${exames}">
+                                    <td>
+                                        <div class="user-cell">
+                                            <span class="avatar" aria-hidden="true">E</span>
 
-                <!-- Descrição do exame -->
-                <label for="descricao">Descrição:</label>
-                <textarea id="descricao" name="descricao" rows="4" required></textarea>
+                                            <span>
+                                                <strong class="user-name"
+                                                        th:text="${'Exame #' + exame.id}">
+                                                    Exame #1
+                                                </strong>
 
-                <!-- Botão para guardar -->
-                <button type="submit">
-                    Registar Exame
-                </button>
+                                                <span class="user-id">Registo clínico</span>
+                                            </span>
+                                        </div>
+                                    </td>
 
-            </form>
-        </section>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${exame.paciente != null and exame.paciente.utilizador != null ? exame.paciente.utilizador.nome : '-'}">
+                                            Nome do paciente
+                                        </span>
+                                    </td>
 
-        <!-- Lista de exames -->
-        <section class="cartão">
-            <h2>Lista de Exames</h2>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${exame.medico != null and exame.medico.utilizador != null ? exame.medico.utilizador.nome : '-'}">
+                                            Nome do médico
+                                        </span>
+                                    </td>
 
-            <!-- Mensagem se não existirem exames -->
-            <p th:if="${exames == null or #lists.isEmpty(exames)}">
-                Ainda não existem exames registados.
-            </p>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${exame.tipo != null ? exame.tipo : '-'}">
+                                            Raio-X
+                                        </span>
+                                    </td>
 
-            <!-- Tabela só aparece se existirem exames -->
-            <table th:if="${exames != null and !#lists.isEmpty(exames)}">
-                <thead>
-                    <tr>
-                        <th>Paciente</th>
-                        <th>Médico</th>
-                        <th>Tipo</th>
-                        <th>Descrição</th>
-                        <th>Resultado</th>
-                        <th>Data Pedido</th>
-                    </tr>
-                </thead>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${exame.dataPedido != null ? #temporals.format(exame.dataPedido, 'dd/MM/yyyy') : '-'}">
+                                            06/07/2026
+                                        </span>
+                                    </td>
 
-                <tbody>
-                    <tr th:each="exame : ${exames}">
-                        <td th:text="${exame.paciente.utilizador.nome}"></td>
-                        <td th:text="${exame.medico.utilizador.nome}"></td>
-                        <td th:text="${exame.tipo}"></td>
-                        <td th:text="${exame.descricao}"></td>
-                        <td th:text="${exame.resultado}"></td>
-                        <td th:text="${#temporals.format(exame.dataPedido, 'dd/MM/yyyy')}"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+                                    <td>
+                                        <span class="status-pill status-active"
+                                              th:text="${exame.estado != null and !#strings.isEmpty(exame.estado) ? exame.estado : 'Pendente'}">
+                                            Pendente
+                                        </span>
+                                    </td>
 
-    </main>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${exame.resultado != null and !#strings.isEmpty(exame.resultado) ? exame.resultado : 'Sem resultado'}">
+                                            Sem resultado
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="empty-state" th:if="${exames == null or #lists.isEmpty(exames)}">
+                        <div class="empty-icon" aria-hidden="true">E</div>
+                        <h3>Ainda não existem exames registados</h3>
+                        <p>Quando forem criados exames, eles aparecem nesta página.</p>
+
+                        <div class="form-actions">
+                                <button class="button button-primary" type="submit">
+                                    Registar exame
+                                </button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 </body>
 </html>

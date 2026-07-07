@@ -1,231 +1,155 @@
 <!DOCTYPE html>
-
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Disponibilidades</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Disponibilidades | Clínica Médica</title>
 
-    <!-- Ligação ao ficheiro CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/listagem.css}" href="/css/listagem.css" />
 </head>
 
 <body>
-    <main>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
 
-        <!-- Cabeçalho da página -->
-        <header>
-            <h1>Disponibilidades dos Médicos</h1>
-            <p>Consulte e registe os horários disponíveis dos médicos da clínica.</p>
-        </header>
+        <div class="layout">
+            <header class="topbar">
+                <div class="brand" aria-label="Clínica Médica">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
 
-<!-- Menu principal com permissões por tipo de utilizador -->
-<nav class="menu">
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </div>
 
-    <!-- Todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/">
-        Página Principal
-    </a>
+                <div class="topbar-actions">
+                    <a class="nav-link" th:href="@{/home}" href="/home">Página principal</a>
+                    <a class="button button-primary" th:href="@{/disponibilidades/nova}" href="/disponibilidades/nova">Nova disponibilidade</a>
+                </div>
+            </header>
 
-    <!-- Apenas ADMIN pode criar utilizadores -->
-    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'ADMIN'}"
-       href="/registar-utilizador">
-        Registar Utilizador
-    </a>
+            <main>
+                <section class="page-heading" aria-labelledby="pageTitle">
+                    <div class="page-heading-text">
+                        <p class="eyebrow">Agenda clínica</p>
+                        <h2 id="pageTitle">Disponibilidades</h2>
+                        <p>Consulta os horários disponíveis dos médicos para marcação de consultas.</p>
+                    </div>
+                </section>
 
-    <!-- ADMIN e SECRETARIA podem ver a listagem geral -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/listagem">
-        Listagem Geral
-    </a>
+                <section class="stats-grid" aria-label="Resumo de disponibilidades">
+                    <article class="stat-card">
+                        <span>Total de disponibilidades</span>
+                        <strong th:text="${disponibilidades != null ? #lists.size(disponibilidades) : 0}">0</strong>
+                    </article>
 
-    <!-- ADMIN e SECRETARIA podem ver pacientes -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/pacientes">
-        Pacientes
-    </a>
+                    <article class="stat-card">
+                        <span>Área</span>
+                        <strong>Agenda</strong>
+                    </article>
 
-    <!-- ADMIN e SECRETARIA podem ver médicos -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/medicos">
-        Médicos
-    </a>
+                    <article class="stat-card">
+                        <span>Estado</span>
+                        <strong>Disponível</strong>
+                    </article>
+                </section>
 
-    <!-- ADMIN e SECRETARIA podem ver secretárias -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/secretarias">
-        Secretárias
-    </a>
+                <section class="list-card" aria-labelledby="listTitle">
+                    <div class="list-header">
+                        <div>
+                            <h3 id="listTitle">Lista de disponibilidades</h3>
+                            <p>Horários registados para cada médico no sistema.</p>
+                        </div>
+                    </div>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver consultas -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/consultas">
-        Consultas
-    </a>
+                    <div class="table-wrap" th:if="${disponibilidades != null and !#lists.isEmpty(disponibilidades)}">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Médico</th>
+                                    <th>Especialidade</th>
+                                    <th>Data</th>
+                                    <th>Hora início</th>
+                                    <th>Hora fim</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver exames -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/exames">
-        Exames
-    </a>
+                            <tbody>
+                                <tr th:each="disponibilidade : ${disponibilidades}">
+                                    <td>
+                                        <div class="user-cell">
+                                            <span class="avatar"
+                                                  aria-hidden="true"
+                                                  th:text="${disponibilidade.medico.utilizador.nome != null and #strings.length(disponibilidade.medico.utilizador.nome) > 0 ? #strings.substring(disponibilidade.medico.utilizador.nome,0,1) : 'M'}">
+                                                M
+                                            </span>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver receitas -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/receitas">
-        Receitas
-    </a>
+                                            <span>
+                                                <strong class="user-name" th:text="${disponibilidade.medico.utilizador.nome}">
+                                                    Nome do médico
+                                                </strong>
 
-    <!-- ADMIN, SECRETARIA e MÉDICO podem ver disponibilidades -->
-    <a class="ativo"
-   th:if="${session.utilizadorLogado != null and 
-          (session.utilizadorLogado.tipo == 'ADMIN' 
-           or session.utilizadorLogado.tipo == 'SECRETARIA'
-           or session.utilizadorLogado.tipo == 'MEDICO')}"
-   href="/disponibilidades">
-    Disponibilidades
-</a>
+                                                <span class="user-id" th:text="${'ID #' + disponibilidade.id}">
+                                                    ID #1
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </td>
 
-    <!-- Logout para todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/logout">
-        Logout
-    </a>
+                                    <td>
+                                        <span class="profile-pill" th:text="${disponibilidade.medico.especialidade}">
+                                            Especialidade
+                                        </span>
+                                    </td>
 
-    <!-- Login só aparece se ninguém estiver logado -->
-    <a th:if="${session.utilizadorLogado == null}"
-       href="/login">
-        Login
-    </a>
+                                    <td>
+                                        <span class="muted-text" th:text="${disponibilidade.data}">
+                                            2026-07-06
+                                        </span>
+                                    </td>
 
-</nav>
+                                    <td>
+                                        <span class="muted-text" th:text="${disponibilidade.horaInicio}">
+                                            09:00
+                                        </span>
+                                    </td>
 
-        <!-- Informação do utilizador logado -->
-<section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-    <p>
-        Utilizador logado:
-        <strong th:text="${session.utilizadorLogado.nome}"></strong>
-        |
-        Tipo:
-        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-    </p>
-</section>
+                                    <td>
+                                        <span class="muted-text" th:text="${disponibilidade.horaFim}">
+                                            12:00
+                                        </span>
+                                    </td>
 
-        <!-- Secção para registar disponibilidade -->
-        <section class="cartão">
-            <h2>Registar horário de trabalho</h2>
+                                    <td>
+                                        <span class="status-pill status-active">Disponível</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-            <!-- Mostra mensagem de erro, caso exista -->
-            <p th:if="${erro}" th:text="${erro}" class="erro"></p>
+                    <div class="empty-state" th:if="${disponibilidades == null or #lists.isEmpty(disponibilidades)}">
+                        <div class="empty-icon" aria-hidden="true">D</div>
+                        <h3>Ainda não existem disponibilidades registadas</h3>
+                        <p>Quando forem criados horários disponíveis, eles aparecem nesta página.</p>
 
-            <!-- Esta mensagem aparece quando ainda não existem médicos -->
-            <div th:if="${medicos == null or #lists.isEmpty(medicos)}">
-                <p>
-                    Ainda não existem médicos registados. Para criar disponibilidades,
-                    primeiro é necessário registar pelo menos um médico.
-                </p>
+                        <a class="button button-primary"
+                           th:href="@{/disponibilidades/nova}"
+                           href="/disponibilidades/nova">
+                            Criar disponibilidade
+                        </a>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
 
-                <!-- Botão necessário apenas quando não existem médicos -->
-                <button type="button" onclick="window.location.href='/registar'">
-                    Registar Médico
-                </button>
-            </div>
-
-            <!-- O formulário só aparece se existirem médicos registados -->
-            <form th:if="${medicos != null and !#lists.isEmpty(medicos)}"
-                  action="/disponibilidades"
-                  method="post"
-                  class="formulario">
-
-                <!-- Seleção do médico -->
-                <label for="medico">Médico:</label>
-                <select id="medico" name="medicoId" required>
-                    <option value="">Selecione um médico</option>
-
-                    <!-- Lista de médicos enviada pelo Controller -->
-                    <option th:each="m : ${medicos}"
-                            th:value="${m.id}"
-                            th:text="${m.utilizador.nome + ' - ' + m.especialidade}">
-                    </option>
-                </select>
-
-                <!-- Data de trabalho -->
-                <label for="data">Data de trabalho:</label>
-                <input type="date" id="data" name="data" required>
-
-                <!-- Hora inicial do horário de trabalho -->
-                <label for="horaInicioTrabalho">Hora Início:</label>
-                <input type="time"
-                       id="horaInicioTrabalho"
-                       name="horaInicioTrabalho"
-                       required>
-
-                <!-- Hora final do horário de trabalho -->
-                <label for="horaFimTrabalho">Hora Fim:</label>
-                <input type="time"
-                       id="horaFimTrabalho"
-                       name="horaFimTrabalho"
-                       required>
-
-                <!-- Botão principal da página -->
-                <button type="submit">
-                    Registar Disponibilidade
-                </button>
-
-            </form>
-        </section>
-
-        <!-- Secção da lista de disponibilidades -->
-        <section class="cartão">
-            <h2>Lista de Disponibilidades</h2>
-
-            <!-- Mensagem quando ainda não há disponibilidades -->
-            <p th:if="${disponibilidades == null or #lists.isEmpty(disponibilidades)}">
-                Ainda não existem disponibilidades registadas.
-            </p>
-
-            <!-- A tabela só aparece se existirem disponibilidades -->
-            <table th:if="${disponibilidades != null and !#lists.isEmpty(disponibilidades)}">
-                <thead>
-                    <tr>
-                        <th>Médico</th>
-                        <th>Especialidade</th>
-                        <th>Data</th>
-                        <th>Hora Início</th>
-                        <th>Hora Fim</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <!-- Percorre todas as disponibilidades -->
-                    <tr th:each="disponibilidade : ${disponibilidades}">
-
-                        <!-- Nome do médico -->
-                        <td th:text="${disponibilidade.medico.utilizador.nome}"></td>
-
-                        <!-- Especialidade do médico -->
-                        <td th:text="${disponibilidade.medico.especialidade}"></td>
-
-                        <!-- Data formatada -->
-                        <td th:text="${#temporals.format(disponibilidade.data, 'dd/MM/yyyy')}"></td>
-
-                        <!-- Hora inicial formatada -->
-                        <td th:text="${#temporals.format(disponibilidade.horaInicio, 'HH:mm')}"></td>
-
-                        <!-- Hora final formatada -->
-                        <td th:text="${#temporals.format(disponibilidade.horaFim, 'HH:mm')}"></td>
-
-                        <!-- Estado da disponibilidade -->
-                        <td th:text="${disponibilidade.ocupada == true ? 'Ocupada' : 'Disponível'}"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-    </main>
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 </body>
 </html>

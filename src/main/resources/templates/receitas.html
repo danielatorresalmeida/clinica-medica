@@ -1,215 +1,250 @@
 <!DOCTYPE html>
-
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Receitas</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Receitas | Clínica Médica</title>
 
-    <!-- Ligação ao CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/listagem.css}" href="/css/listagem.css" />
 </head>
 
 <body>
-    <main>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
 
-        <!-- Cabeçalho -->
-        <header>
-            <h1>Receitas</h1>
-            <p>Registe e consulte as receitas emitidas pelos médicos.</p>
-        </header>
+        <div class="layout">
+            <header class="topbar">
+                <a class="brand brand-link"
+                   th:href="@{/home}"
+                   href="/home"
+                   aria-label="Ir para a página principal">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
 
-<!-- Menu principal com permissões por tipo de utilizador -->
-<nav class="menu">
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </a>
 
-    <!-- Todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/">
-        Página Principal
-    </a>
+                <div class="topbar-actions">
+                    <a class="nav-link" th:href="@{/home}" href="/home">
+                        Página principal
+                    </a>
 
-    <!-- Apenas ADMIN pode criar utilizadores -->
-    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'ADMIN'}"
-       href="/registar-utilizador">
-        Registar Utilizador
-    </a>
+                    <a class="button button-primary"
+                        th:if="${tipoUtilizador == 'ADMIN' or tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'MEDICO'}"
+                        th:href="@{/receitas/nova}"
+                        href="/receitas/nova">
+                        Nova receita
+                    </a>
 
-    <!-- ADMIN e SECRETARIA podem ver a listagem geral -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/listagem">
-        Listagem Geral
-    </a>
+                    <a class="nav-link" th:href="@{/logout}" href="/logout">
+                        Logout
+                    </a>
+                </div>
+            </header>
 
-    <!-- ADMIN e SECRETARIA podem ver pacientes -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/pacientes">
-        Pacientes
-    </a>
+            <main>
+                <section class="page-heading" aria-labelledby="pageTitle">
+                    <div class="page-heading-text">
+                        <p class="eyebrow">Gestão clínica</p>
+                        <h2 id="pageTitle">Receitas</h2>
+                        <p>Consulte as receitas médicas registadas, os pacientes associados e os medicamentos prescritos.</p>
+                    </div>
+                </section>
 
-    <!-- ADMIN e SECRETARIA podem ver médicos -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/medicos">
-        Médicos
-    </a>
+                <section class="stats-grid" aria-label="Resumo de receitas">
+                    <article class="stat-card">
+                        <span>Total de receitas</span>
+                        <strong th:text="${receitas != null ? #lists.size(receitas) : 0}">0</strong>
+                    </article>
 
-    <!-- ADMIN e SECRETARIA podem ver secretárias -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/secretarias">
-        Secretárias
-    </a>
+                    <article class="stat-card">
+                        <span>Área</span>
+                        <strong>Receitas</strong>
+                    </article>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver consultas -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/consultas">
-        Consultas
-    </a>
+                    <article class="stat-card">
+                        <span>Estado</span>
+                        <strong>Registadas</strong>
+                    </article>
+                </section>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver exames -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/exames">
-        Exames
-    </a>
+                <section id="novaReceita"
+                         class="list-card"
+                         th:if="${tipoUtilizador == 'ADMIN' or tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'MEDICO'}"
+                         aria-labelledby="formTitle">
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver receitas -->
-    <a class="ativo" th:if="${session.utilizadorLogado != null}" href="/receitas">
-        Receitas
-    </a>
+                    <div class="list-header">
+                        <div>
+                            <h3 id="formTitle">Nova receita</h3>
+                            <p>Escolha uma consulta e preencha os dados da receita médica.</p>
+                        </div>
+                    </div>
 
-    <!-- ADMIN, SECRETARIA e MÉDICO podem ver disponibilidades -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' 
-               or session.utilizadorLogado.tipo == 'SECRETARIA'
-               or session.utilizadorLogado.tipo == 'MEDICO')}"
-       href="/disponibilidades">
-        Disponibilidades
-    </a>
+                    <div class="empty-state" th:if="${erro != null}">
+                        <div class="empty-icon" aria-hidden="true">!</div>
+                        <h3>Não foi possível criar a receita</h3>
+                        <p th:text="${erro}">Mensagem de erro.</p>
+                    </div>
 
-    <!-- Logout para todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/logout">
-        Logout
-    </a>
+                    <form th:action="@{/receitas}"
+                          action="/receitas"
+                          method="post"
+                          th:if="${consultas != null and !#lists.isEmpty(consultas)}">
 
-    <!-- Login só aparece se ninguém estiver logado -->
-    <a th:if="${session.utilizadorLogado == null}"
-       href="/login">
-        Login
-    </a>
+                        <div class="form-grid">
+                            <div class="field-group">
+                                <label for="consultaId">Consulta</label>
 
-</nav>
+                                <select id="consultaId" name="consultaId" required>
+                                    <option value="">Selecionar consulta</option>
 
-        <!-- Informação do utilizador logado -->
-        <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-        <p>
-        Utilizador logado:
-        <strong th:text="${session.utilizadorLogado.nome}"></strong>
-        |
-        Tipo:
-        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-        </p>
-        </section>
+                                    <option th:each="consulta : ${consultas}"
+                                            th:value="${consulta.id}"
+                                            th:text="${'Consulta #' + consulta.id + ' | ' + consulta.paciente.utilizador.nome + ' | Dr(a). ' + consulta.medico.utilizador.nome}">
+                                        Consulta #1 | Paciente | Médico
+                                    </option>
+                                </select>
+                            </div>
 
-        <!-- Formulário para criar receita -->
-        <section class="cartão">
-            <h2>Registar Receita</h2>
+                            <div class="field-group">
+                                <label for="medicamento">Medicamento</label>
+                                <input id="medicamento"
+                                       name="medicamento"
+                                       type="text"
+                                       placeholder="Exemplo: Paracetamol"
+                                       required />
+                            </div>
 
-            <!-- Mostra erro, se existir -->
-            <p th:if="${erro}" th:text="${erro}" class="erro"></p>
+                            <div class="field-group">
+                                <label for="dosagem">Dosagem</label>
+                                <input id="dosagem"
+                                       name="dosagem"
+                                       type="text"
+                                       placeholder="Exemplo: 500mg"
+                                       required />
+                            </div>
 
-            <!-- Mensagem se não existirem consultas -->
-            <p th:if="${consultas == null or #lists.isEmpty(consultas)}">
-                Ainda não existem consultas marcadas. Primeiro marque uma consulta.
-            </p>
+                            <div class="field-group">
+                                <label for="instrucoes">Instruções</label>
+                                <input id="instrucoes"
+                                       name="instrucoes"
+                                       type="text"
+                                       placeholder="Exemplo: Tomar de 8 em 8 horas"
+                                       required />
+                            </div>
+                        </div>
 
-            <!-- Formulário só aparece se existirem consultas -->
-            <form th:if="${consultas != null and !#lists.isEmpty(consultas)}"
-                  action="/receitas"
-                  method="post"
-                  class="formulario">
+                        <button class="button button-primary" type="submit">
+                            Registar receita
+                        </button>
+                    </form>
 
-                <!-- Seleção da consulta -->
-                <label for="consulta">Consulta:</label>
-                <select id="consulta" name="consultaId" required>
-                    <option value="">Selecione uma consulta</option>
+                    <div class="empty-state" th:if="${consultas == null or #lists.isEmpty(consultas)}">
+                        <div class="empty-icon" aria-hidden="true">C</div>
+                        <h3>Não existem consultas disponíveis</h3>
+                        <p>É necessário existir uma consulta antes de registar uma receita.</p>
+                    </div>
+                </section>
 
-                    <option th:each="c : ${consultas}"
-                            th:value="${c.id}"
-                            th:text="${c.paciente.utilizador.nome
-                                      + ' - '
-                                      + c.medico.utilizador.nome
-                                      + ' - '
-                                      + #temporals.format(c.data, 'dd/MM/yyyy')
-                                      + ' às '
-                                      + #temporals.format(c.horaInicio, 'HH:mm')}">
-                    </option>
-                </select>
+                <section class="list-card receitas-card" aria-labelledby="listTitle">
+                    <div class="list-header">
+                        <div>
+                            <h3 id="listTitle">Lista de receitas</h3>
+                            <p>Dados principais das receitas médicas registadas no sistema.</p>
+                        </div>
+                    </div>
 
-                <!-- Medicamento -->
-                <label for="medicamento">Medicamento:</label>
-                <input type="text" id="medicamento" name="medicamento" required>
+                    <div class="table-wrap" th:if="${receitas != null and !#lists.isEmpty(receitas)}">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Receita</th>
+                                    <th>Paciente</th>
+                                    <th>Médico</th>
+                                    <th>Medicamento</th>
+                                    <th>Dosagem</th>
+                                    <th>Data de emissão</th>
+                                </tr>
+                            </thead>
 
-                <!-- Dosagem -->
-                <label for="dosagem">Dosagem:</label>
-                <input type="text" id="dosagem" name="dosagem" required>
+                            <tbody>
+                                <tr th:each="receita : ${receitas}">
+                                    <td>
+                                        <div class="user-cell">
+                                            <span class="avatar" aria-hidden="true">R</span>
 
-                <!-- Instruções -->
-                <label for="instrucoes">Instruções:</label>
-                <textarea id="instrucoes" name="instrucoes" rows="4" required></textarea>
+                                            <span>
+                                                <strong class="user-name"
+                                                        th:text="${'Receita #' + receita.id}">
+                                                    Receita #1
+                                                </strong>
 
-                <!-- Botão para guardar -->
-                <button type="submit">
-                    Registar Receita
-                </button>
+                                                <span class="user-id">Registo clínico</span>
+                                            </span>
+                                        </div>
+                                    </td>
 
-            </form>
-        </section>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${receita.paciente != null and receita.paciente.utilizador != null ? receita.paciente.utilizador.nome : '-'}">
+                                            Nome do paciente
+                                        </span>
+                                    </td>
 
-        <!-- Lista de receitas -->
-        <section class="cartão">
-            <h2>Lista de Receitas</h2>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${receita.medico != null and receita.medico.utilizador != null ? receita.medico.utilizador.nome : '-'}">
+                                            Nome do médico
+                                        </span>
+                                    </td>
 
-            <!-- Mensagem se não existirem receitas -->
-            <p th:if="${receitas == null or #lists.isEmpty(receitas)}">
-                Ainda não existem receitas registadas.
-            </p>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${receita.medicamento != null ? receita.medicamento : '-'}">
+                                            Medicamento
+                                        </span>
+                                    </td>
 
-            <!-- Tabela só aparece se existirem receitas -->
-            <table th:if="${receitas != null and !#lists.isEmpty(receitas)}">
-                <thead>
-                    <tr>
-                        <th>Paciente</th>
-                        <th>Médico</th>
-                        <th>Especialidade</th>
-                        <th>Data da consulta</th>
-                        <th>Hora</th>
-                        <th>Medicamento</th>
-                        <th>Dosagem</th>
-                        <th>Instruções</th>
-                        <th>Data de emissão</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${receita.dosagem != null ? receita.dosagem : '-'}">
+                                            Dosagem
+                                        </span>
+                                    </td>
 
-                <tbody>
-                    <tr th:each="r : ${receitas}">
-                        <td th:text="${r.paciente.utilizador.nome}"></td>
-                        <td th:text="${r.medico.utilizador.nome}"></td>
-                        <td th:text="${r.medico.especialidade}"></td>
-                        <td th:text="${#temporals.format(r.consulta.data, 'dd/MM/yyyy')}"></td>
-                        <td th:text="${#temporals.format(r.consulta.horaInicio, 'HH:mm') + ' às ' + #temporals.format(r.consulta.horaFim, 'HH:mm')}"></td>
-                        <td th:text="${r.medicamento}"></td>
-                        <td th:text="${r.dosagem}"></td>
-                        <td th:text="${r.instrucoes}"></td>
-                        <td th:text="${#temporals.format(r.dataEmissao, 'dd/MM/yyyy')}"></td>
-                        <td th:text="${r.estado}"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${receita.dataEmissao != null ? #temporals.format(receita.dataEmissao, 'dd/MM/yyyy') : '-'}">
+                                            06/07/2026
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-    </main>
+                    <div class="empty-state" th:if="${receitas == null or #lists.isEmpty(receitas)}">
+                        <div class="empty-icon" aria-hidden="true">R</div>
+                        <h3>Ainda não existem receitas registadas</h3>
+                        <p>Quando forem criadas receitas médicas, elas aparecem nesta página.</p>
+
+                        <div class="form-actions">
+                            <button class="button button-primary" type="submit">
+                                Registar receita
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 </body>
 </html>

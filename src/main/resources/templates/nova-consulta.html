@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nova Consulta | Clínica Médica</title>
+
+    <link rel="stylesheet" th:href="@{/css/listagem.css}" href="/css/listagem.css" />
+</head>
+
+<body>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
+
+        <div class="layout">
+            <header class="topbar">
+                <a class="brand brand-link"
+                   th:href="@{/home}"
+                   href="/home"
+                   aria-label="Ir para a página principal">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
+
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </a>
+
+                <div class="topbar-actions">
+                    <a class="nav-link" th:href="@{/home}" href="/home">Página principal</a>
+                    <a class="nav-link" th:href="@{/consultas}" href="/consultas">Voltar à lista</a>
+                    <a class="nav-link" th:href="@{/logout}" href="/logout">Logout</a>
+                </div>
+            </header>
+
+            <main>
+                <section class="page-heading" aria-labelledby="pageTitle">
+                    <div class="page-heading-text">
+                        <p class="eyebrow">Gestão clínica</p>
+                        <h2 id="pageTitle">Nova consulta</h2>
+                        <p>Escolha uma disponibilidade livre para marcar uma nova consulta.</p>
+                    </div>
+                </section>
+
+                <section class="list-card form-card" aria-labelledby="formTitle">
+                    <div class="list-header">
+                        <div>
+                            <h3 id="formTitle">Dados da consulta</h3>
+
+                            <p th:if="${tipoUtilizador == 'ADMIN' or tipoUtilizador == 'SECRETARIA'}">
+                                Escolha o paciente e uma disponibilidade livre.
+                            </p>
+
+                            <p th:if="${tipoUtilizador == 'PACIENTE'}">
+                                Escolha uma disponibilidade livre para marcar a sua consulta.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="empty-state" th:if="${erro != null}">
+                        <div class="empty-icon" aria-hidden="true">!</div>
+                        <h3>Não foi possível marcar a consulta</h3>
+                        <p th:text="${erro}">Mensagem de erro.</p>
+                    </div>
+
+                    <form th:action="@{/consultas}"
+                          action="/consultas"
+                          method="post"
+                          th:if="${disponibilidadesLivres != null and !#lists.isEmpty(disponibilidadesLivres)}">
+
+                        <div class="form-grid">
+                            <div class="field-group"
+                                 th:if="${tipoUtilizador == 'ADMIN' or tipoUtilizador == 'SECRETARIA'}">
+                                <label for="pacienteId">Paciente</label>
+
+                                <select id="pacienteId" name="pacienteId" required>
+                                    <option value="">Selecionar paciente</option>
+
+                                    <option th:each="paciente : ${pacientes}"
+                                            th:value="${paciente.id}"
+                                            th:text="${paciente.utilizador.nome}">
+                                        Nome do paciente
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="disponibilidadeId">Disponibilidade</label>
+
+                                <select id="disponibilidadeId" name="disponibilidadeId" required>
+                                    <option value="">Selecionar disponibilidade</option>
+
+                                    <option th:each="disp : ${disponibilidadesLivres}"
+                                            th:value="${disp.id}"
+                                            th:text="${#temporals.format(disp.data, 'dd/MM/yyyy') + ' | ' + #temporals.format(disp.horaInicio, 'HH:mm') + ' - ' + #temporals.format(disp.horaFim, 'HH:mm') + ' | Dr(a). ' + disp.medico.utilizador.nome}">
+                                        06/07/2026 | 10:00 - 10:30 | Médico
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="button button-primary" type="submit">
+                                Marcar consulta
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="empty-state"
+                         th:if="${disponibilidadesLivres == null or #lists.isEmpty(disponibilidadesLivres)}">
+                        <div class="empty-icon" aria-hidden="true">D</div>
+                        <h3>Não existem disponibilidades livres</h3>
+                        <p>Quando um médico adicionar disponibilidade, será possível marcar consulta.</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
+</body>
+</html>

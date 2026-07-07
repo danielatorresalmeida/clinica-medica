@@ -1,242 +1,173 @@
 <!DOCTYPE html>
-
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Consultas</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Consultas | Clínica Médica</title>
 
-    <!-- Ligação ao ficheiro CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/listagem.css}" href="/css/listagem.css" />
 </head>
 
 <body>
-    <main>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
 
-        <!-- Cabeçalho da página -->
-        <header>
-            <h1>Consultas</h1>
-            <p>Marque e consulte as consultas da clínica.</p>
-        </header>
+        <div class="layout">
+            <header class="topbar">
+                <a class="brand brand-link"
+                   th:href="@{/home}"
+                   href="/home"
+                   aria-label="Ir para a página principal">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
 
-<!-- Menu principal com permissões por tipo de utilizador -->
-<nav class="menu">
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </a>
 
-    <!-- Todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/">
-        Página Principal
-    </a>
+                <div class="topbar-actions">
+                    <a class="nav-link" th:href="@{/home}" href="/home">
+                        Página principal
+                    </a>
 
-    <!-- Apenas ADMIN pode criar utilizadores -->
-    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'ADMIN'}"
-       href="/registar-utilizador">
-        Registar Utilizador
-    </a>
+                    <a class="button button-primary"
+                       th:if="${tipoUtilizador == 'ADMIN' or tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'PACIENTE'}"
+                       th:href="@{/consultas/nova}"
+                       href="/consultas/nova">
+                        Nova consulta
+                    </a>
 
-    <!-- ADMIN e SECRETARIA podem ver a listagem geral -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/listagem">
-        Listagem Geral
-    </a>
-
-    <!-- ADMIN e SECRETARIA podem ver pacientes -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/pacientes">
-        Pacientes
-    </a>
-
-    <!-- ADMIN e SECRETARIA podem ver médicos -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/medicos">
-        Médicos
-    </a>
-
-    <!-- ADMIN e SECRETARIA podem ver secretárias -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/secretarias">
-        Secretárias
-    </a>
-
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver consultas -->
-    <a class="ativo" th:if="${session.utilizadorLogado != null}" href="/consultas">
-        Consultas
-    </a>
-
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver exames -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/exames">
-        Exames
-    </a>
-
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver receitas -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/receitas">
-        Receitas
-    </a>
-
-    <!-- ADMIN, SECRETARIA e MÉDICO podem ver disponibilidades -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' 
-               or session.utilizadorLogado.tipo == 'SECRETARIA'
-               or session.utilizadorLogado.tipo == 'MEDICO')}"
-       href="/disponibilidades">
-        Disponibilidades
-    </a>
-
-    <!-- Logout para todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/logout">
-        Logout
-    </a>
-
-    <!-- Login só aparece se ninguém estiver logado -->
-    <a th:if="${session.utilizadorLogado == null}"
-       href="/login">
-        Login
-    </a>
-
-</nav>
-
-        <!-- Informação do utilizador logado -->
-        <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-            <p>
-                Utilizador logado:
-                <strong th:text="${session.utilizadorLogado.nome}"></strong>
-                |
-                Tipo:
-                <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-            </p>
-        </section>
-
-        <!-- Formulário para marcar consulta -->
-        <section class="cartão">
-            <h2>Marcar Consulta</h2>
-
-            <!-- Mostra mensagem de erro, caso exista -->
-            <p th:if="${erro}" th:text="${erro}" class="erro"></p>
-
-            <!-- Médico não marca consulta aqui -->
-            <p th:if="${tipoUtilizador == 'MEDICO'}">
-                Como médico, pode consultar as suas consultas marcadas.
-            </p>
-
-            <!-- Mensagem se não existirem disponibilidades livres -->
-            <p th:if="${(tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'PACIENTE') 
-                       and (disponibilidadesLivres == null or #lists.isEmpty(disponibilidadesLivres))}">
-                Ainda não existem disponibilidades livres para marcar consulta.
-            </p>
-
-            <!-- Formulário para secretária e paciente -->
-            <form th:if="${(tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'PACIENTE')
-                         and disponibilidadesLivres != null 
-                         and !#lists.isEmpty(disponibilidadesLivres)}"
-                  action="/consultas"
-                  method="post"
-                  class="formulario">
-
-                <!-- A secretária escolhe o paciente -->
-                <div th:if="${tipoUtilizador == 'SECRETARIA'}">
-                    <label for="paciente">Paciente:</label>
-
-                    <select id="paciente" name="pacienteId" required>
-                        <option value="">Selecione um paciente</option>
-
-                        <option th:each="p : ${pacientes}"
-                                th:value="${p.id}"
-                                th:text="${p.utilizador.nome}">
-                        </option>
-                    </select>
+                    <a class="nav-link" th:href="@{/logout}" href="/logout">
+                        Logout
+                    </a>
                 </div>
+            </header>
 
-                <!-- O paciente marca consulta para si próprio -->
-                <p th:if="${tipoUtilizador == 'PACIENTE'}">
-                    A consulta será marcada para o seu próprio utilizador.
-                </p>
+            <main>
+                <section class="page-heading" aria-labelledby="pageTitle">
+                    <div class="page-heading-text">
+                        <p class="eyebrow">Gestão clínica</p>
+                        <h2 id="pageTitle">Consultas</h2>
+                        <p>Consulte as marcações registadas, os médicos responsáveis e os pacientes associados.</p>
+                    </div>
+                </section>
 
-                <!-- Seleção da disponibilidade -->
-                <label for="disponibilidade">Disponibilidade:</label>
+                <section class="stats-grid" aria-label="Resumo de consultas">
+                    <article class="stat-card">
+                        <span>Total de consultas</span>
+                        <strong th:text="${consultas != null ? #lists.size(consultas) : 0}">0</strong>
+                    </article>
 
-                <select id="disponibilidade" name="disponibilidadeId" required>
-                    <option value="">Selecione uma disponibilidade</option>
+                    <article class="stat-card">
+                        <span>Área</span>
+                        <strong>Consultas</strong>
+                    </article>
 
-                    <option th:each="d : ${disponibilidadesLivres}"
-                            th:value="${d.id}"
-                            th:text="${d.medico.utilizador.nome
-                                      + ' - '
-                                      + d.medico.especialidade
-                                      + ' - '
-                                      + #temporals.format(d.data, 'dd/MM/yyyy')
-                                      + ' das '
-                                      + #temporals.format(d.horaInicio, 'HH:mm')
-                                      + ' às '
-                                      + #temporals.format(d.horaFim, 'HH:mm')}">
-                    </option>
-                </select>
+                    <article class="stat-card">
+                        <span>Perfil</span>
+                        <strong th:text="${tipoUtilizador}">Perfil</strong>
+                    </article>
+                </section>
 
-                <!-- Botão para marcar consulta -->
-                <button type="submit">
-                    Marcar Consulta
-                </button>
+                <section class="list-card" aria-labelledby="listTitle">
+                    <div class="list-header">
+                        <div>
+                            <h3 id="listTitle">Lista de consultas</h3>
+                            <p>Dados principais das consultas registadas no sistema.</p>
+                        </div>
+                    </div>
 
-            </form>
-        </section>
+                    <div class="table-wrap" th:if="${consultas != null and !#lists.isEmpty(consultas)}">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Consulta</th>
+                                    <th>Paciente</th>
+                                    <th>Médico</th>
+                                    <th>Data</th>
+                                    <th>Hora</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
 
-        <!-- Lista de consultas -->
-        <section class="cartão">
-            <h2>Lista de Consultas</h2>
+                            <tbody>
+                                <tr th:each="consulta : ${consultas}">
+                                    <td>
+                                        <div class="user-cell">
+                                            <span class="avatar" aria-hidden="true">C</span>
 
-            <!-- Mensagem quando ainda não existem consultas -->
-            <p th:if="${consultas == null or #lists.isEmpty(consultas)}">
-                Ainda não existem consultas marcadas.
-            </p>
+                                            <span>
+                                                <strong class="user-name"
+                                                        th:text="${'Consulta #' + consulta.id}">
+                                                    Consulta #1
+                                                </strong>
 
-            <!-- Tabela só aparece se existirem consultas -->
-            <table th:if="${consultas != null and !#lists.isEmpty(consultas)}">
-                <thead>
-                    <tr>
-                        <th>Paciente</th>
-                        <th>Médico</th>
-                        <th>Especialidade</th>
-                        <th>Data</th>
-                        <th>Hora Início</th>
-                        <th>Hora Fim</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
+                                                <span class="user-id">Registo clínico</span>
+                                            </span>
+                                        </div>
+                                    </td>
 
-                <tbody>
-                    <!-- Percorre todas as consultas enviadas pelo Controller -->
-                    <tr th:each="consulta : ${consultas}">
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${consulta.paciente != null and consulta.paciente.utilizador != null ? consulta.paciente.utilizador.nome : '-'}">
+                                            Nome do paciente
+                                        </span>
+                                    </td>
 
-                        <!-- Nome do paciente -->
-                        <td th:text="${consulta.paciente.utilizador.nome}"></td>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${consulta.medico != null and consulta.medico.utilizador != null ? consulta.medico.utilizador.nome : '-'}">
+                                            Nome do médico
+                                        </span>
+                                    </td>
 
-                        <!-- Nome do médico -->
-                        <td th:text="${consulta.medico.utilizador.nome}"></td>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${consulta.data != null ? #temporals.format(consulta.data, 'dd/MM/yyyy') : '-'}">
+                                            06/07/2026
+                                        </span>
+                                    </td>
 
-                        <!-- Especialidade do médico -->
-                        <td th:text="${consulta.medico.especialidade}"></td>
+                                    <td>
+                                        <span class="muted-text"
+                                              th:text="${(consulta.horaInicio != null ? #temporals.format(consulta.horaInicio, 'HH:mm') : '-') + ' - ' + (consulta.horaFim != null ? #temporals.format(consulta.horaFim, 'HH:mm') : '-')}">
+                                            10:00 - 10:30
+                                        </span>
+                                    </td>
 
-                        <!-- Data da consulta -->
-                        <td th:text="${#temporals.format(consulta.data, 'dd/MM/yyyy')}"></td>
+                                    <td>
+                                        <span class="status-pill status-active"
+                                              th:text="${consulta.estado != null ? consulta.estado : 'Marcada'}">
+                                            Marcada
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                        <!-- Hora de início -->
-                        <td th:text="${#temporals.format(consulta.horaInicio, 'HH:mm')}"></td>
+                    <div class="empty-state" th:if="${consultas == null or #lists.isEmpty(consultas)}">
+                        <div class="empty-icon" aria-hidden="true">C</div>
+                        <h3>Ainda não existem consultas registadas</h3>
+                        <p>Quando forem criadas consultas, elas aparecem nesta página.</p>
 
-                        <!-- Hora de fim -->
-                        <td th:text="${#temporals.format(consulta.horaFim, 'HH:mm')}"></td>
+                        <a class="button button-primary"
+                           th:if="${tipoUtilizador == 'ADMIN' or tipoUtilizador == 'SECRETARIA' or tipoUtilizador == 'PACIENTE'}"
+                           th:href="@{/consultas/nova}"
+                           href="/consultas/nova">
+                            Marcar consulta
+                        </a>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
 
-                        <!-- Estado da consulta -->
-                        <td th:text="${consulta.estado}"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-    </main>
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 </body>
 </html>
