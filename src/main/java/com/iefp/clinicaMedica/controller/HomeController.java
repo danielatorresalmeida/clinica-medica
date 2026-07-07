@@ -6,15 +6,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    // Mostra a página principal da aplicação
     @GetMapping("/")
-    public String paginaPrincipal() {
-        return "index";
+    public String raiz() {
+        return "redirect:/login";
     }
 
-    // Mostra página de acesso negado
+    @GetMapping("/home")
+    public String home() {
+        return "home";
+    }
+
     @GetMapping("/acesso-negado")
     public String acessoNegado() {
-    return "acesso-negado";
-}
+        return "acesso-negado";
+    }
 }

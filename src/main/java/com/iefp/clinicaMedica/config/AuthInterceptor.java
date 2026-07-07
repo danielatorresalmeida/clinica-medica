@@ -16,22 +16,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     ) throws Exception {
 
         String caminho = request.getRequestURI();
-        String metodo = request.getMethod();
 
-        // Páginas públicas
-        if (caminho.equals("/")
-                || caminho.equals("/login")
-                || caminho.equals("/acesso-negado")
-                || caminho.equals("/error")
-                || caminho.startsWith("/css/")
-                || caminho.startsWith("/js/")
-                || caminho.startsWith("/images/")
-                || caminho.startsWith("/h2-console")) {
-            return true;
-        }
-
-        // Logout permitido
-        if (caminho.equals("/logout")) {
+        if (rotaPublica(caminho)) {
             return true;
         }
 
@@ -45,28 +31,57 @@ public class AuthInterceptor implements HandlerInterceptor {
         Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
         String tipo = utilizador.getTipo();
 
-        // ADMIN pode aceder a tudo, incluindo criar utilizadores
-        if (tipo.equals("ADMIN")) {
+        // Todos os utilizadores com login podem entrar na home
+        if (caminho.equals("/home")) {
             return true;
         }
 
-        // SECRETARIA pode gerir a clínica, mas não pode criar utilizadores
-        if (tipo.equals("SECRETARIA")) {
-            if (podeSecretaria(caminho, metodo)) {
+        // Apenas ADMIN pode aceder ao registo de utilizadores
+        if (caminho.equals("/registar-utilizador")
+                || caminho.equals("/registar")
+                || caminho.startsWith("/registo/")) {
+
+            if ("ADMIN".equals(tipo)) {
+                return true;
+            }
+
+            response.sendRedirect("/acesso-negado");
+            return false;
+        }
+
+        // ADMIN pode aceder a tudo
+        if ("ADMIN".equals(tipo)) {
+            return true;
+        }
+
+        // SECRETARIA pode consultar e gerir áreas clínicas principais
+        if ("SECRETARIA".equals(tipo)) {
+            if (caminho.startsWith("/pacientes")
+                    || caminho.startsWith("/medicos")
+                    || caminho.startsWith("/consultas")
+                    || caminho.startsWith("/exames")
+                    || caminho.startsWith("/receitas")
+                    || caminho.startsWith("/disponibilidades")) {
                 return true;
             }
         }
 
-        // Permissões do médico
-        if (tipo.equals("MEDICO")) {
-            if (podeMedico(caminho, metodo)) {
+        // MEDICO pode consultar pacientes e gerir as suas áreas clínicas
+        if ("MEDICO".equals(tipo)) {
+            if (caminho.startsWith("/pacientes")
+                    || caminho.startsWith("/consultas")
+                    || caminho.startsWith("/exames")
+                    || caminho.startsWith("/receitas")
+                    || caminho.startsWith("/disponibilidades")) {
                 return true;
             }
         }
 
-        // Permissões do paciente
-        if (tipo.equals("PACIENTE")) {
-            if (podePaciente(caminho, metodo)) {
+        // PACIENTE só pode consultar as suas áreas
+        if ("PACIENTE".equals(tipo)) {
+            if (caminho.startsWith("/consultas")
+                    || caminho.startsWith("/exames")
+                    || caminho.startsWith("/receitas")) {
                 return true;
             }
         }
@@ -75,53 +90,16 @@ public class AuthInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    // Define o que a secretária pode fazer
-    private boolean podeSecretaria(String caminho, String metodo) {
-
-        // A secretária NÃO pode criar utilizadores
-        if (caminho.equals("/registar-utilizador")
-                || caminho.equals("/registar")
-                || caminho.equals("/registo/utilizador")
-                || caminho.startsWith("/registo/")) {
-            return false;
-        }
-
-        // Pode aceder ao resto das páginas da clínica
-        return true;
-    }
-
-    // Define o que o médico pode fazer
-    private boolean podeMedico(String caminho, String metodo) {
-
-        if (metodo.equals("GET")) {
-            return caminho.equals("/consultas")
-                    || caminho.equals("/exames")
-                    || caminho.equals("/receitas")
-                    || caminho.equals("/disponibilidades");
-        }
-
-        if (metodo.equals("POST")) {
-            return caminho.equals("/disponibilidades")
-                    || caminho.equals("/exames")
-                    || caminho.equals("/receitas");
-        }
-
-        return false;
-    }
-
-    // Define o que o paciente pode fazer
-    private boolean podePaciente(String caminho, String metodo) {
-
-        if (metodo.equals("GET")) {
-            return caminho.equals("/consultas")
-                    || caminho.equals("/exames")
-                    || caminho.equals("/receitas");
-        }
-
-        if (metodo.equals("POST")) {
-            return caminho.equals("/consultas");
-        }
-
-        return false;
+    private boolean rotaPublica(String caminho) {
+        return caminho.equals("/")
+                || caminho.equals("/login")
+                || caminho.equals("/logout")
+                || caminho.equals("/acesso-negado")
+                || caminho.equals("/error")
+                || caminho.startsWith("/css/")
+                || caminho.startsWith("/js/")
+                || caminho.startsWith("/images/")
+                || caminho.startsWith("/webjars/")
+                || caminho.startsWith("/h2-console");
     }
 }
