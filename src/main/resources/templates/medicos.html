@@ -1,154 +1,150 @@
 <!DOCTYPE html>
-
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Médicos</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Médicos | Clínica Médica</title>
 
-    <!-- Ligação ao CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/listagem.css}" href="/css/listagem.css" />
 </head>
 
 <body>
-    <main>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
 
-        <!-- Cabeçalho da página -->
-        <header>
-            <h1>Médicos</h1>
-            <p>Consulte os médicos registados na clínica.</p>
-        </header>
+        <div class="layout">
+            <header class="topbar">
+                <div class="brand" aria-label="Clínica Médica">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
 
-<!-- Menu principal com permissões por tipo de utilizador -->
-<nav class="menu">
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </div>
 
-    <!-- Todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/">
-        Página Principal
-    </a>
+                <div class="topbar-actions">
+                    <a class="nav-link" th:href="@{/home}" href="/home">Página principal</a>
+                    <a class="button button-primary" th:href="@{/registar-utilizador}" href="/registar-utilizador">Novo médico</a>
+                </div>
+            </header>
 
-    <!-- Apenas ADMIN pode criar utilizadores -->
-    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'ADMIN'}"
-       href="/registar-utilizador">
-        Registar Utilizador
-    </a>
+            <main>
+                <section class="page-heading" aria-labelledby="pageTitle">
+                    <div class="page-heading-text">
+                        <p class="eyebrow">Gestão clínica</p>
+                        <h2 id="pageTitle">Médicos</h2>
+                        <p>Consulta os médicos registados na clínica, as respetivas especialidades e dados de contacto.</p>
+                    </div>
+                </section>
 
-    <!-- ADMIN e SECRETARIA podem ver a listagem geral -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/listagem">
-        Listagem Geral
-    </a>
+                <section class="stats-grid" aria-label="Resumo de médicos">
+                    <article class="stat-card">
+                        <span>Total de médicos</span>
+                        <strong th:text="${medicos != null ? #lists.size(medicos) : 0}">0</strong>
+                    </article>
 
-    <!-- ADMIN e SECRETARIA podem ver pacientes -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/pacientes">
-        Pacientes
-    </a>
+                    <article class="stat-card">
+                        <span>Área</span>
+                        <strong>Médicos</strong>
+                    </article>
 
-    <!-- ADMIN e SECRETARIA podem ver médicos -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/medicos">
-        Médicos
-    </a>
+                    <article class="stat-card">
+                        <span>Estado</span>
+                        <strong>Ativo</strong>
+                    </article>
+                </section>
 
-    <!-- ADMIN e SECRETARIA podem ver secretárias -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/secretarias">
-        Secretárias
-    </a>
+                <section class="list-card" aria-labelledby="listTitle">
+                    <div class="list-header">
+                        <div>
+                            <h3 id="listTitle">Lista de médicos</h3>
+                            <p>Dados profissionais e contactos dos médicos registados no sistema.</p>
+                        </div>
+                    </div>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver consultas -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/consultas">
-        Consultas
-    </a>
+                    <div class="table-wrap" th:if="${medicos != null and !#lists.isEmpty(medicos)}">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Médico</th>
+                                    <th>Email</th>
+                                    <th>Especialidade</th>
+                                    <th>Telefone</th>
+                                    <th>Endereço</th>
+                                </tr>
+                            </thead>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver exames -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/exames">
-        Exames
-    </a>
+                            <tbody>
+                                <tr th:each="medico : ${medicos}">
+                                    <td>
+                                        <div class="user-cell">
+                                            <span class="avatar"
+                                                  aria-hidden="true"
+                                                  th:text="${medico.utilizador != null and medico.utilizador.nome != null and #strings.length(medico.utilizador.nome) > 0 ? #strings.substring(medico.utilizador.nome,0,1) : 'M'}">
+                                                M
+                                            </span>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver receitas -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/receitas">
-        Receitas
-    </a>
+                                            <span>
+                                                <strong class="user-name" th:text="${medico.utilizador.nome}">
+                                                    Nome do médico
+                                                </strong>
 
-    <!-- ADMIN, SECRETARIA e MÉDICO podem ver disponibilidades -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' 
-               or session.utilizadorLogado.tipo == 'SECRETARIA'
-               or session.utilizadorLogado.tipo == 'MEDICO')}"
-       href="/disponibilidades">
-        Disponibilidades
-    </a>
+                                                <span class="user-id" th:text="${'ID #' + medico.id}">
+                                                    ID #1
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </td>
 
-    <!-- Logout para todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/logout">
-        Logout
-    </a>
+                                    <td>
+                                        <span class="muted-text" th:text="${medico.utilizador.email}">
+                                            medico@teste.pt
+                                        </span>
+                                    </td>
 
-    <!-- Login só aparece se ninguém estiver logado -->
-    <a th:if="${session.utilizadorLogado == null}"
-       href="/login">
-        Login
-    </a>
+                                    <td>
+                                        <span class="profile-pill" th:text="${medico.especialidade}">
+                                            Cardiologia
+                                        </span>
+                                    </td>
 
-</nav>
+                                    <td>
+                                        <span class="muted-text" th:text="${medico.utilizador.telefone}">
+                                            912 345 678
+                                        </span>
+                                    </td>
 
-        <!-- Informação do utilizador logado -->
-        <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-        <p>
-        Utilizador logado:
-        <strong th:text="${session.utilizadorLogado.nome}"></strong>
-        |
-        Tipo:
-        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-        </p>
-        </section>
+                                    <td>
+                                        <span class="muted-text" th:text="${medico.utilizador.endereco}">
+                                            Rua do Médico
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-        <!-- Lista de médicos -->
-        <section class="cartão">
-            <h2>Lista de Médicos</h2>
+                    <div class="empty-state" th:if="${medicos == null or #lists.isEmpty(medicos)}">
+                        <div class="empty-icon" aria-hidden="true">M</div>
+                        <h3>Ainda não existem médicos registados</h3>
+                        <p>Quando registares médicos, eles aparecem nesta página.</p>
 
-            <!-- Mensagem quando não existem médicos -->
-            <p th:if="${medicos == null or #lists.isEmpty(medicos)}">
-                Ainda não existem médicos registados.
-            </p>
+                        <a class="button button-primary"
+                           th:href="@{/registar-utilizador}"
+                           href="/registar-utilizador">
+                            Registar médico
+                        </a>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
 
-            <!-- Tabela só aparece se existirem médicos -->
-            <table th:if="${medicos != null and !#lists.isEmpty(medicos)}">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>Especialidade</th>
-                        <th>Telefone</th>
-                        <th>Endereço</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <!-- Percorre todos os médicos -->
-                    <tr th:each="medico : ${medicos}">
-                        <td th:text="${medico.id}"></td>
-                        <td th:text="${medico.utilizador.nome}"></td>
-                        <td th:text="${medico.utilizador.email}"></td>
-                        <td th:text="${medico.especialidade}"></td>
-                        <td th:text="${medico.utilizador.telefone}"></td>
-                        <td th:text="${medico.utilizador.endereco}"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-    </main>
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 </body>
 </html>

@@ -1,48 +1,126 @@
 <!DOCTYPE html>
-
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Clínica Médica</title>
 
-    <!-- Ligação ao CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}" href="/css/login.css" />
 </head>
 
-<body>
-    <main>
+<body th:attr="data-login-error=${erro != null ? 'true' : 'false'}" data-login-error="false">    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
+        <span class="decor decor-middle-right" aria-hidden="true"></span>
 
-        <!-- Cabeçalho da página -->
-        <header>
-            <h1>Login</h1>
-            <p>Entre no sistema da clínica médica.</p>
+        <header class="brand-header" aria-label="Identificação da aplicação">
+            <div class="brand-logo" aria-hidden="true">
+                <span class="medical-cross vertical"></span>
+                <span class="medical-cross horizontal"></span>
+            </div>
+
+            <h1>Clínica Médica</h1>
+            <p>Sistema de gestão clínica com acesso por perfil.</p>
         </header>
 
-        <!-- Formulário de login -->
-        <section class="cartão">
-            <h2>Acesso ao sistema</h2>
+        <main class="login-area">
+            <section class="login-card"
+         id="loginCard"
+         aria-labelledby="loginTitle"
+         th:classappend="${erro != null ? ' is-error' : ''}">
+                <div class="card-heading">
+                    <h2 id="loginTitle">Entrar no sistema</h2>
+                    <p>Aceda à sua conta com o email e a senha registados.</p>
+                </div>
 
-            <!-- Mostra mensagem de erro, caso exista -->
-            <p th:if="${erro}" th:text="${erro}" class="erro"></p>
+                <form class="login-form" id="loginForm" th:action="@{/login}" action="/login" method="post" novalidate>
+                    <input type="hidden"
+                           th:if="${_csrf != null}"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}" />
 
-            <form action="/login" method="post" class="formulario">
+                    <div class="form-intro">
+                        <h3>Login</h3>
+                        <p>Introduza os seus dados de acesso.</p>
+                    </div>
 
-                <!-- Email do utilizador -->
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                    <div class="error-box" id="loginError" role="alert" aria-live="assertive">
+                        <span class="error-icon" aria-hidden="true">!</span>
+                        <span class="error-text"
+                            th:text="${erro != null ? erro : 'Email ou senha inválidos. Verifique os dados e tente novamente.'}">
+                            Email ou senha inválidos. Verifique os dados e tente novamente.
+                        </span>
+                    </div>
 
-                <!-- Senha do utilizador -->
-                <label for="senha">Senha:</label>
-                <input type="password" id="senha" name="senha" required>
+                    <div class="field-group">
+                        <label for="email">Email</label>
 
-                <!-- Botão para entrar -->
-                <button type="submit">
-                    Entrar
-                </button>
+                        <div class="input-control">
+                            <svg class="input-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="3" y="5" width="18" height="14" rx="3"></rect>
+                                <path d="M5 8l7 5 7-5"></path>
+                            </svg>
 
-            </form>
-        </section>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="exemplo@teste.pt"
+                                autocomplete="email"
+                                required />
+                        </div>
+                    </div>
 
-    </main>
+                    <div class="field-group">
+                        <label for="senha">Senha</label>
+
+                        <div class="input-control">
+                            <svg class="input-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="6" y="10" width="12" height="10" rx="3"></rect>
+                                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                            </svg>
+
+                            <input
+                                id="senha"
+                                name="senha"
+                                type="password"
+                                placeholder="••••••••••"
+                                autocomplete="current-password"
+                                required />
+
+                            <button class="password-toggle"
+                                    id="passwordToggle"
+                                    type="button"
+                                    aria-label="Mostrar senha"
+                                    aria-pressed="false">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="submit-button" type="submit">Entrar</button>
+
+                    <p class="help-line">
+                        <span>Problemas no acesso?</span>
+                        <a href="mailto:administrador@clinica.pt">Contactar administrador</a>
+                    </p>
+                </form>
+            </section>
+
+            <aside class="login-note" aria-label="Informação após login">
+                <div class="note-icon" aria-hidden="true">i</div>
+
+                <div>
+                    <h3>Depois do login</h3>
+                    <p>Será redirecionado conforme o seu perfil.</p>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 </body>
 </html>

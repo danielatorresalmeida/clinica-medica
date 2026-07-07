@@ -1,278 +1,203 @@
 <!DOCTYPE html>
-
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Listagem</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listagem | Clínica Médica</title>
 
-    <!-- Ligação ao CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/listagem.css}" href="/css/listagem.css" />
 </head>
 
 <body>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
 
-<main>
+        <div class="layout">
+            <header class="topbar">
+                <div class="brand" aria-label="Clínica Médica">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
 
-    <!-- Cabeçalho da página -->
-    <header>
-        <h1>Listagem Geral da Clínica Médica</h1>
-    </header>
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </div>
 
-<!-- Menu principal com permissões por tipo de utilizador -->
-<nav class="menu">
+                <div class="topbar-actions">
+                    <a class="nav-link" th:href="@{/home}" href="/home">Página principal</a>
+                    <a class="button button-primary" th:href="@{/registar-utilizador}" href="/registar-utilizador">Novo utilizador</a>
+                </div>
+            </header>
 
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/">
-        Página Principal
-    </a>
+            <main>
+                <section class="page-heading" aria-labelledby="pageTitle">
+                    <div class="page-heading-text">
+                        <p class="eyebrow">Administração</p>
+                        <h2 id="pageTitle">Listagem de utilizadores</h2>
+                        <p>Consulta os utilizadores registados, confirma o perfil de acesso e mantém os dados atualizados.</p>
+                    </div>
+                </section>
 
-    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'ADMIN'}"
-       href="/registar-utilizador">
-        Registar Utilizador
-    </a>
+                <section class="stats-grid" aria-label="Resumo da listagem">
+                    <article class="stat-card">
+                        <span>Total de utilizadores</span>
+                        <strong th:text="${totalUtilizadores}">0</strong>
+                    </article>
 
-    <a class="ativo"
-       th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/listagem">
-        Listagem Geral
-    </a>
+                    <article class="stat-card">
+                        <span>Utilizadores ativos</span>
+                        <strong th:text="${totalAtivos}">0</strong>
+                    </article>
 
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/pacientes">
-        Pacientes
-    </a>
+                    <article class="stat-card">
+                        <span>Perfis registados</span>
+                        <strong th:text="${totalPerfis}">4</strong>
+                    </article>
+                </section>
 
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/medicos">
-        Médicos
-    </a>
+                <section class="list-card" aria-labelledby="listTitle">
+                    <div class="list-header">
+                        <div>
+                            <h3 id="listTitle">Registos</h3>
+                            <p>Usa a pesquisa ou os filtros para encontrar rapidamente um utilizador.</p>
+                        </div>
 
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/secretarias">
-        Secretárias
-    </a>
+                        <button class="button button-secondary" id="botaoDestacarNomes" type="button">
+                            Destacar nomes
+                        </button>
+                    </div>
 
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/consultas">
-        Consultas
-    </a>
+                    <form class="toolbar" th:action="@{/listagem}" action="/listagem" method="get">
+                        <div class="input-control">
+                            <input
+                                id="pesquisa"
+                                name="pesquisa"
+                                type="search"
+                                placeholder="Pesquisar por nome, email ou telefone"
+                                aria-label="Pesquisar utilizador"
+                                th:value="${pesquisa}" />
+                        </div>
 
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/exames">
-        Exames
-    </a>
+                        <div class="input-control">
+                            <select id="tipo" name="tipo" aria-label="Filtrar por perfil">
+                                <option value="">Todos os perfis</option>
+                                <option value="ADMIN" th:selected="${tipo == 'ADMIN'}">Administração</option>
+                                <option value="SECRETARIA" th:selected="${tipo == 'SECRETARIA'}">Secretaria</option>
+                                <option value="MEDICO" th:selected="${tipo == 'MEDICO'}">Médico</option>
+                                <option value="PACIENTE" th:selected="${tipo == 'PACIENTE'}">Paciente</option>
+                            </select>
+                        </div>
 
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/receitas">
-        Receitas
-    </a>
+                        <button class="button button-primary" type="submit">Filtrar</button>
+                    </form>
 
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' 
-               or session.utilizadorLogado.tipo == 'SECRETARIA'
-               or session.utilizadorLogado.tipo == 'MEDICO')}"
-       href="/disponibilidades">
-        Disponibilidades
-    </a>
+                    <div class="table-wrap" th:if="${utilizadores != null and !#lists.isEmpty(utilizadores)}">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Perfil</th>
+                                    <th>Estado</th>
+                                    <th class="actions-cell">Ações</th>
+                                </tr>
+                            </thead>
 
-    <a class="sair"
-       th:if="${session.utilizadorLogado != null}"
-       href="/logout">
-        Logout
-    </a>
+                            <tbody>
+                                <tr th:each="utilizador : ${utilizadores}">
+                                    <td>
+                                        <div class="user-cell">
+                                            <span class="avatar"
+                                                  aria-hidden="true"
+                                                  th:text="${utilizador.nome != null and #strings.length(utilizador.nome) > 0 ? #strings.substring(utilizador.nome,0,1) : 'U'}">
+                                                U
+                                            </span>
 
-</nav>
+                                            <span>
+                                                <strong class="user-name nome-registo" th:text="${utilizador.nome}">
+                                                    Nome do utilizador
+                                                </strong>
 
-    <!-- Informação do utilizador logado -->
-    <section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-        <p>
-            Utilizador logado:
-            <strong th:text="${session.utilizadorLogado.nome}"></strong>
-            |
-            Tipo:
-            <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-        </p>
-    </section>
+                                                <span class="user-id" th:text="${'ID #' + utilizador.id}">
+                                                    ID #1
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </td>
 
-    <!-- Separadores da listagem -->
-    <div class="tabs">
+                                    <td>
+                                        <span class="muted-text" th:text="${utilizador.email}">
+                                            utilizador@clinica.pt
+                                        </span>
+                                    </td>
 
-        <button type="button"
-                class="tab-botao tab-ativa"
-                onclick="mostrarTab('tab-utilizadores', this)">
-            Utilizadores
-        </button>
+                                    <td>
+                                        <span class="muted-text" th:text="${utilizador.telefone}">
+                                            912 345 678
+                                        </span>
+                                    </td>
 
-        <button type="button"
-                class="tab-botao"
-                onclick="mostrarTab('tab-pacientes', this)">
-            Pacientes
-        </button>
+                                    <td>
+                                        <span class="profile-pill" th:text="${utilizador.tipo}">
+                                            MÉDICO
+                                        </span>
+                                    </td>
 
-        <button type="button"
-                class="tab-botao"
-                onclick="mostrarTab('tab-medicos', this)">
-            Médicos
-        </button>
+                                    <td>
+                                        <span class="status-pill status-active">Ativo</span>
+                                    </td>
 
-        <button type="button"
-                class="tab-botao"
-                onclick="mostrarTab('tab-secretarias', this)">
-            Secretárias
-        </button>
+                                    <td class="actions-cell">
+                                        <div class="row-actions">
+                                            <a class="action-link"
+                                               th:href="@{/utilizadores/editar/{id}(id=${utilizador.id})}"
+                                               href="/utilizadores/editar/1">
+                                                Editar
+                                            </a>
 
+                                            <form class="delete-form"
+                                                  th:action="@{/utilizadores/eliminar/{id}(id=${utilizador.id})}"
+                                                  action="/utilizadores/eliminar/1"
+                                                  method="post"
+                                                  onsubmit="return confirm('Tens a certeza que queres eliminar este utilizador?');">
+
+                                                <input type="hidden"
+                                                       th:if="${_csrf != null}"
+                                                       th:name="${_csrf.parameterName}"
+                                                       th:value="${_csrf.token}" />
+
+                                                <button class="action-button" type="submit">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="empty-state" th:if="${utilizadores == null or #lists.isEmpty(utilizadores)}">
+                        <div class="empty-icon" aria-hidden="true">+</div>
+                        <h3>Ainda não existem utilizadores registados</h3>
+                        <p>Quando criares médicos, pacientes, secretárias ou administradores, eles aparecem nesta listagem.</p>
+
+                        <a class="button button-primary"
+                           th:href="@{/registar-utilizador}"
+                           href="/registar-utilizador">
+                            Criar primeiro utilizador
+                        </a>
+                    </div>
+                </section>
+            </main>
+        </div>
     </div>
 
-    <!-- TAB UTILIZADORES -->
-    <section id="tab-utilizadores" class="tab-conteudo">
-        <h2>Utilizadores</h2>
-
-        <div class="botoes">
-            <button type="button" onclick="destacarNomes()">
-                Destacar nomes
-            </button>
-        </div>
-
-        <p class="mensagem-vazia"
-           th:if="${utilizadores == null or #lists.isEmpty(utilizadores)}">
-            Ainda não existem utilizadores registados.
-        </p>
-
-        <table th:if="${utilizadores != null and !#lists.isEmpty(utilizadores)}">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Tipo</th>
-                <th>Data de nascimento</th>
-                <th>Telefone</th>
-                <th>Endereço</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="utilizador : ${utilizadores}">
-                <td th:text="${utilizador.id}"></td>
-                <td class="nome-registo" th:text="${utilizador.nome}"></td>
-                <td th:text="${utilizador.email}"></td>
-                <td th:text="${utilizador.tipo}"></td>
-                <td th:text="${#temporals.format(utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
-                <td th:text="${utilizador.telefone}"></td>
-                <td th:text="${utilizador.endereco}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <!-- TAB PACIENTES -->
-    <section id="tab-pacientes" class="tab-conteudo escondida">
-        <h2>Pacientes</h2>
-
-        <p class="mensagem-vazia"
-           th:if="${pacientes == null or #lists.isEmpty(pacientes)}">
-            Ainda não existem pacientes registados.
-        </p>
-
-        <table th:if="${pacientes != null and !#lists.isEmpty(pacientes)}">
-            <thead>
-            <tr>
-                <th>ID Paciente</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Data de nascimento</th>
-                <th>Telefone</th>
-                <th>Endereço</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="paciente : ${pacientes}">
-                <td th:text="${paciente.id}"></td>
-                <td class="nome-registo" th:text="${paciente.utilizador.nome}"></td>
-                <td th:text="${paciente.utilizador.email}"></td>
-                <td th:text="${#temporals.format(paciente.utilizador.dataNascimento, 'dd/MM/yyyy')}"></td>
-                <td th:text="${paciente.utilizador.telefone}"></td>
-                <td th:text="${paciente.utilizador.endereco}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <!-- TAB MÉDICOS -->
-    <section id="tab-medicos" class="tab-conteudo escondida">
-        <h2>Médicos</h2>
-
-        <p class="mensagem-vazia"
-           th:if="${medicos == null or #lists.isEmpty(medicos)}">
-            Ainda não existem médicos registados.
-        </p>
-
-        <table th:if="${medicos != null and !#lists.isEmpty(medicos)}">
-            <thead>
-            <tr>
-                <th>ID Médico</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Especialidade</th>
-                <th>Telefone</th>
-                <th>Endereço</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="medico : ${medicos}">
-                <td th:text="${medico.id}"></td>
-                <td class="nome-registo" th:text="${medico.utilizador.nome}"></td>
-                <td th:text="${medico.utilizador.email}"></td>
-                <td th:text="${medico.especialidade}"></td>
-                <td th:text="${medico.utilizador.telefone}"></td>
-                <td th:text="${medico.utilizador.endereco}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <!-- TAB SECRETÁRIAS -->
-    <section id="tab-secretarias" class="tab-conteudo escondida">
-        <h2>Secretárias</h2>
-
-        <p class="mensagem-vazia"
-           th:if="${secretarias == null or #lists.isEmpty(secretarias)}">
-            Ainda não existem secretárias registadas.
-        </p>
-
-        <table th:if="${secretarias != null and !#lists.isEmpty(secretarias)}">
-            <thead>
-            <tr>
-                <th>ID Secretária</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Telefone</th>
-                <th>Endereço</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="secretaria : ${secretarias}">
-                <td th:text="${secretaria.id}"></td>
-                <td class="nome-registo" th:text="${secretaria.utilizador.nome}"></td>
-                <td th:text="${secretaria.utilizador.email}"></td>
-                <td th:text="${secretaria.utilizador.telefone}"></td>
-                <td th:text="${secretaria.utilizador.endereco}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
-
-</main>
-
-<!-- Script das tabs e destaque de nomes -->
-<script th:src="@{/js/script.js}"></script>
-
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 </body>
 </html>

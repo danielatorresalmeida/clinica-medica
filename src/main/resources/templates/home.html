@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | Clínica Médica</title>
+
+    <link rel="stylesheet" th:href="@{/css/home.css}" href="/css/home.css" />
+</head>
+
+<body>
+    <div class="page-shell" th:with="utilizador=${session.utilizadorLogado}">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
+
+        <main class="home-layout">
+            <header class="topbar">
+                <div class="brand" aria-label="Clínica Médica">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
+
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </div>
+
+                <a class="logout-link"
+                   th:if="${utilizador != null}"
+                   th:href="@{/logout}"
+                   href="/logout">
+                    Logout
+                </a>
+            </header>
+
+            <section class="hero-card" th:if="${utilizador != null}">
+                <div class="hero-content">
+                    <p class="eyebrow">Página principal</p>
+
+                    <h2>
+                        Bem-vindo,
+                        <span th:text="${utilizador.nome}">Utilizador</span>.
+                    </h2>
+
+                    <p>
+                        Escolha uma opção para navegar pelo sistema. O menu abaixo é apresentado de acordo com o seu perfil de acesso.
+                    </p>
+                </div>
+
+                <div class="user-card" aria-label="Utilizador logado">
+                    <div class="user-avatar"
+                         th:text="${utilizador.nome != null and #strings.length(utilizador.nome) > 0 ? #strings.substring(utilizador.nome,0,1) : '?'}">
+                        A
+                    </div>
+
+                    <div class="user-info">
+                        <strong th:text="${utilizador.nome}">Nome do utilizador</strong>
+
+                        <span class="user-role">
+                            Perfil: <b th:text="${utilizador.tipo}">ADMIN</b>
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="menu-grid" th:if="${utilizador != null}" aria-label="Menu principal">
+
+                <a class="menu-card"
+                   th:if="${utilizador.tipo == 'ADMIN'}"
+                   th:href="@{/registar-utilizador}"
+                   href="/registar-utilizador">
+                    <span class="menu-icon">+</span>
+                    <span>
+                        <strong>Registar Utilizador</strong>
+                        <small>Criar novos acessos ao sistema.</small>
+                    </span>
+                </a>
+
+                <a class="menu-card"
+                   th:if="${utilizador.tipo == 'ADMIN'}"
+                   th:href="@{/listagem}"
+                   href="/listagem">
+                    <span class="menu-icon">≡</span>
+                    <span>
+                        <strong>Listagem Geral</strong>
+                        <small>Consultar todos os registos.</small>
+                    </span>
+                </a>
+
+                <a class="menu-card"
+                   th:if="${utilizador.tipo == 'ADMIN' or utilizador.tipo == 'SECRETARIA' or utilizador.tipo == 'MEDICO'}"
+                   th:href="@{/pacientes}"
+                   href="/pacientes">
+                    <span class="menu-icon">P</span>
+                    <span>
+                        <strong>Pacientes</strong>
+                        <small>Consultar dados dos pacientes.</small>
+                    </span>
+                </a>
+
+                <a class="menu-card"
+                   th:if="${utilizador.tipo == 'ADMIN' or utilizador.tipo == 'SECRETARIA'}"
+                   th:href="@{/medicos}"
+                   href="/medicos">
+                    <span class="menu-icon">M</span>
+                    <span>
+                        <strong>Médicos</strong>
+                        <small>Consultar médicos e especialidades.</small>
+                    </span>
+                </a>
+
+                <a class="menu-card"
+                   th:if="${utilizador.tipo == 'ADMIN'}"
+                   th:href="@{/secretarias}"
+                   href="/secretarias">
+                    <span class="menu-icon">S</span>
+                    <span>
+                        <strong>Secretárias</strong>
+                        <small>Gerir equipa administrativa.</small>
+                    </span>
+                </a>
+
+                <a class="menu-card"
+                   th:if="${utilizador.tipo == 'ADMIN' or utilizador.tipo == 'SECRETARIA' or utilizador.tipo == 'MEDICO' or utilizador.tipo == 'PACIENTE'}"
+                   th:href="@{/consultas}"
+                   href="/consultas">
+                    <span class="menu-icon">C</span>
+                    <span>
+                        <strong>Consultas</strong>
+                        <small>Ver consultas registadas.</small>
+                    </span>
+                </a>
+
+                <a class="menu-card"
+                   th:if="${utilizador.tipo == 'ADMIN' or utilizador.tipo == 'SECRETARIA' or utilizador.tipo == 'MEDICO' or utilizador.tipo == 'PACIENTE'}"
+                   th:href="@{/exames}"
+                   href="/exames">
+                    <span class="menu-icon">E</span>
+                    <span>
+                        <strong>Exames</strong>
+                        <small>Consultar exames registados.</small>
+                    </span>
+                </a>
+
+                <a class="menu-card"
+                   th:if="${utilizador.tipo == 'ADMIN' or utilizador.tipo == 'SECRETARIA' or utilizador.tipo == 'MEDICO' or utilizador.tipo == 'PACIENTE'}"
+                   th:href="@{/receitas}"
+                   href="/receitas">
+                    <span class="menu-icon">R</span>
+                    <span>
+                        <strong>Receitas</strong>
+                        <small>Consultar receitas médicas.</small>
+                    </span>
+                </a>
+
+                <a class="menu-card"
+                   th:if="${utilizador.tipo == 'ADMIN' or utilizador.tipo == 'SECRETARIA' or utilizador.tipo == 'MEDICO'}"
+                   th:href="@{/disponibilidades}"
+                   href="/disponibilidades">
+                    <span class="menu-icon">D</span>
+                    <span>
+                        <strong>Disponibilidades</strong>
+                        <small>Gerir horários disponíveis.</small>
+                    </span>
+                </a>
+
+            </section>
+
+            <section class="access-card" th:if="${utilizador == null}">
+                <h2>Acesso necessário</h2>
+                <p>Precisa de iniciar sessão para aceder ao sistema.</p>
+                <a th:href="@{/login}" href="/login">Ir para o login</a>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,166 +1,176 @@
 <!DOCTYPE html>
-
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Registar Utilizador</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registar Utilizador | Clínica Médica</title>
+
+    <link rel="stylesheet" th:href="@{/css/registar-utilizador.css}" href="/css/registar-utilizador.css" />
 </head>
 
 <body>
+    <div class="page-shell" th:with="utilizador=${session.utilizadorLogado}">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
 
-<main>
-    <h1>Registar Utilizador</h1>
+        <main class="layout">
+            <header class="topbar">
+                <div class="brand" aria-label="Clínica Médica">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
 
-<!-- Menu principal com permissões por tipo de utilizador -->
-<nav class="menu">
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </div>
 
-    <!-- Todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/">
-        Página Principal
-    </a>
+                <nav class="nav-actions" aria-label="Navegação principal">
+                    <a class="nav-link" th:href="@{/home}" href="/home">
+                        Página Principal
+                    </a>
 
-    <!-- Apenas ADMIN pode criar utilizadores -->
-    <a th:if="${session.utilizadorLogado != null and session.utilizadorLogado.tipo == 'ADMIN'}"
-       href="/registar-utilizador">
-        Registar Utilizador
-    </a>
+                    <a class="nav-link"
+                       th:if="${utilizador != null and (utilizador.tipo == 'ADMIN' or utilizador.tipo == 'SECRETARIA')}"
+                       th:href="@{/listagem}"
+                       href="/listagem">
+                        Listagem Geral
+                    </a>
 
-    <!-- ADMIN e SECRETARIA podem ver a listagem geral -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/listagem">
-        Listagem Geral
-    </a>
+                    <a class="nav-link"
+                       th:if="${utilizador != null}"
+                       th:href="@{/logout}"
+                       href="/logout">
+                        Logout
+                    </a>
+                </nav>
+            </header>
 
-    <!-- ADMIN e SECRETARIA podem ver pacientes -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/pacientes">
-        Pacientes
-    </a>
+            <section class="page-heading">
+                <p class="eyebrow">Administração</p>
+                <h2>Registar utilizador</h2>
+                <p>
+                    Crie um novo acesso ao sistema e defina o perfil do utilizador.
+                    A especialidade só é necessária quando o tipo escolhido for Médico.
+                </p>
+            </section>
 
-    <!-- ADMIN e SECRETARIA podem ver médicos -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/medicos">
-        Médicos
-    </a>
+            <section class="form-card">
+                <form th:action="@{/registo/utilizador}" action="/registo/utilizador" method="post">
+                    <div class="form-grid">
 
-    <!-- ADMIN e SECRETARIA podem ver secretárias -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' or session.utilizadorLogado.tipo == 'SECRETARIA')}"
-       href="/secretarias">
-        Secretárias
-    </a>
+                        <div class="field-group">
+                            <label for="tipoUtilizador">
+                                Tipo de utilizador <span class="required">*</span>
+                            </label>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver consultas -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/consultas">
-        Consultas
-    </a>
+                            <div class="input-control">
+                                <select name="tipo" id="tipoUtilizador" required>
+                                    <option value="" disabled selected>Selecione</option>
+                                    <option value="ADMIN">Administrador</option>
+                                    <option value="PACIENTE">Paciente</option>
+                                    <option value="MEDICO">Médico</option>
+                                    <option value="SECRETARIA">Secretária</option>
+                                </select>
+                            </div>
+                        </div>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver exames -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/exames">
-        Exames
-    </a>
+                        <div class="field-group">
+                            <label for="nome">
+                                Nome completo <span class="required">*</span>
+                            </label>
 
-    <!-- ADMIN, SECRETARIA, MÉDICO e PACIENTE podem ver receitas -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/receitas">
-        Receitas
-    </a>
+                            <div class="input-control">
+                                <input id="nome" type="text" name="nome" placeholder="Nome do utilizador" required />
+                            </div>
+                        </div>
 
-    <!-- ADMIN, SECRETARIA e MÉDICO podem ver disponibilidades -->
-    <a th:if="${session.utilizadorLogado != null and 
-              (session.utilizadorLogado.tipo == 'ADMIN' 
-               or session.utilizadorLogado.tipo == 'SECRETARIA'
-               or session.utilizadorLogado.tipo == 'MEDICO')}"
-       href="/disponibilidades">
-        Disponibilidades
-    </a>
+                        <div class="field-group">
+                            <label for="email">
+                                Email <span class="required">*</span>
+                            </label>
 
-    <!-- Logout para todos os utilizadores logados -->
-    <a th:if="${session.utilizadorLogado != null}"
-       href="/logout">
-        Logout
-    </a>
+                            <div class="input-control">
+                                <input id="email" type="email" name="email" placeholder="utilizador@clinica.pt" required />
+                            </div>
+                        </div>
 
-    <!-- Login só aparece se ninguém estiver logado -->
-    <a th:if="${session.utilizadorLogado == null}"
-       href="/login">
-        Login
-    </a>
+                        <div class="field-group">
+                            <label for="senha">
+                                Senha <span class="required">*</span>
+                            </label>
 
-</nav>
+                            <div class="input-control">
+                                <input id="senha" type="password" name="senha" placeholder="Definir senha" required />
+                            </div>
+                        </div>
 
-<!-- Informação do utilizador logado -->
-<section class="utilizador-logado" th:if="${session.utilizadorLogado != null}">
-    <p>
-        Utilizador logado:
-        <strong th:text="${session.utilizadorLogado.nome}"></strong>
-        |
-        Tipo:
-        <strong th:text="${session.utilizadorLogado.tipo}"></strong>
-    </p>
-</section>
+                        <div class="field-group">
+                            <label for="dataNascimento">
+                                Data de nascimento <span class="required">*</span>
+                            </label>
 
-<hr>
+                            <div class="input-control">
+                                <input id="dataNascimento" type="date" name="dataNascimento" required />
+                            </div>
+                        </div>
 
-<section class="form-card form-unico">
-    <h2>Novo Utilizador</h2>
+                        <div class="field-group">
+                            <label for="telefone">
+                                Telefone <span class="required">*</span>
+                            </label>
 
-    <form action="/registo/utilizador" method="post">
+                            <div class="input-control">
+                                <input id="telefone" type="text" name="telefone" placeholder="912 345 678" required />
+                            </div>
+                        </div>
 
-        <label>Tipo de utilizador:</label>
-        <select name="tipo" id="tipoUtilizador" required>
-            <option value="" disabled selected>Selecione</option>
-            <option value="ADMIN">Administrador</option>
-            <option value="PACIENTE">Paciente</option>
-            <option value="MEDICO">Médico</option>
-            <option value="SECRETARIA">Secretária</option>
-        </select>
+                        <div class="field-group full">
+                            <label for="endereco">
+                                Endereço <span class="required">*</span>
+                            </label>
 
-        <label>Nome completo:</label>
-        <input type="text" name="nome" required>
+                            <div class="input-control">
+                                <input id="endereco" type="text" name="endereco" placeholder="Rua, número, localidade" required />
+                            </div>
+                        </div>
 
-        <label>Email:</label>
-        <input type="email" name="email" required>
+                        <div class="field-group escondida" id="campoEspecialidade">
+                            <label for="especialidade">
+                                Especialidade <span class="required">*</span>
+                            </label>
 
-        <label>Senha:</label>
-        <input type="password" name="senha" required>
+                            <div class="input-control">
+                                <select id="especialidade" name="especialidade">
+                                    <option value="">Selecione uma especialidade</option>
 
-        <label>Data de nascimento:</label>
-        <input type="date" name="dataNascimento" required>
+                                    <option th:each="esp : ${especialidades}"
+                                            th:value="${esp.nome}"
+                                            th:text="${esp.nome}">
+                                        Cardiologia
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
 
-        <label>Telefone:</label>
-        <input type="text" name="telefone" required>
+                    </div>
 
-        <label>Endereço:</label>
-        <input type="text" name="endereco" required>
+                    <div class="form-actions">
+                        <a class="button button-secondary" th:href="@{/home}" href="/home">
+                            Cancelar
+                        </a>
 
-        <!-- Especialidade do médico -->
-        <label for="especialidade">Especialidade:</label>
+                        <button class="button button-primary" type="submit">
+                            Registar novo utilizador
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
 
-        <select id="especialidade" name="especialidade">
-        <option value="">Selecione uma especialidade</option>
-
-        <!-- Lista as especialidades vindas da base de dados -->
-        <option th:each="esp : ${especialidades}"
-                th:value="${esp.nome}"
-                th:text="${esp.nome}">
-        </option>
-    </select>
-
-        <button type="submit">Registar novo utilizador</button>
-        </form>
-    </section>
-
-</main>
-
-<script th:src="@{/js/script.js}"></script>
-
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 </body>
 </html>

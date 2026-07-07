@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Utilizador | Clínica Médica</title>
+
+    <link rel="stylesheet" th:href="@{/css/editar-utilizador.css}" href="/css/editar-utilizador.css" />
+</head>
+
+<body>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
+
+        <div class="layout">
+            <header class="topbar">
+                <div class="brand" aria-label="Clínica Médica">
+                    <div class="brand-logo" aria-hidden="true">
+                        <span class="medical-cross vertical"></span>
+                        <span class="medical-cross horizontal"></span>
+                    </div>
+
+                    <div>
+                        <h1>Clínica Médica</h1>
+                        <p>Sistema de gestão clínica</p>
+                    </div>
+                </div>
+
+                <a class="back-link" th:href="@{/listagem}" href="/listagem">
+                    Voltar à listagem
+                </a>
+            </header>
+
+            <main>
+                <section class="page-heading" aria-labelledby="pageTitle">
+                    <p class="eyebrow">Administração</p>
+                    <h2 id="pageTitle">Editar utilizador</h2>
+                    <p>Atualiza os dados principais do utilizador e confirma o tipo de acesso antes de guardar as alterações.</p>
+                </section>
+
+                <div class="content-grid">
+                    <section class="form-card" aria-labelledby="formTitle">
+                        <div class="section-title">
+                            <div>
+                                <h3 id="formTitle">Dados do utilizador</h3>
+                                <p>Os campos marcados com <span class="required">*</span> são obrigatórios.</p>
+                            </div>
+
+                            <span class="status-pill">Conta registada</span>
+                        </div>
+
+                        <div class="alert" role="note">
+                            <span class="alert-icon" aria-hidden="true">!</span>
+                            <span>Altera a senha apenas se for necessário. Se deixares o campo vazio, a senha atual será mantida.</span>
+                        </div>
+
+                        <form th:action="@{/utilizadores/editar/{id}(id=${utilizador.id})}"
+                              th:object="${utilizador}"
+                              action="/utilizadores/editar"
+                              method="post">
+
+                            <input type="hidden" th:field="*{id}" />
+
+                            <div class="form-grid">
+                                <div class="field-group">
+                                    <label for="nome">Nome completo <span class="required">*</span></label>
+                                    <div class="input-control">
+                                        <input id="nome" th:field="*{nome}" type="text" placeholder="Nome do utilizador" required />
+                                    </div>
+                                </div>
+
+                                <div class="field-group">
+                                    <label for="email">Email <span class="required">*</span></label>
+                                    <div class="input-control">
+                                        <input id="email" th:field="*{email}" type="email" placeholder="utilizador@clinica.pt" required />
+                                    </div>
+                                </div>
+
+                                <div class="field-group">
+                                    <label for="tipo">Tipo de utilizador <span class="required">*</span></label>
+                                    <div class="input-control">
+                                        <select id="tipo" th:field="*{tipo}" required>
+                                            <option value="">Selecionar tipo</option>
+                                            <option value="ADMIN">Administração</option>
+                                            <option value="SECRETARIA">Secretaria</option>
+                                            <option value="MEDICO">Médico</option>
+                                            <option value="PACIENTE">Paciente</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="field-group">
+                                    <label for="dataNascimento">Data de nascimento</label>
+                                    <div class="input-control">
+                                        <input id="dataNascimento" th:field="*{dataNascimento}" type="date" />
+                                    </div>
+                                </div>
+
+                                <div class="field-group">
+                                    <label for="telefone">Telefone</label>
+                                    <div class="input-control">
+                                        <input id="telefone" th:field="*{telefone}" type="tel" placeholder="912 345 678" />
+                                    </div>
+                                </div>
+
+                                <div class="field-group">
+                                    <label for="endereco">Endereço</label>
+                                    <div class="input-control">
+                                        <input id="endereco" th:field="*{endereco}" type="text" placeholder="Rua, número, localidade" />
+                                    </div>
+                                </div>
+
+                                <div class="field-group">
+                                    <label for="senha">Nova senha</label>
+                                    <div class="input-control password-field">
+                                        <input id="senha"
+                                               name="senha"
+                                               type="password"
+                                               placeholder="Deixar vazio para manter"
+                                               autocomplete="new-password" />
+
+                                        <button class="password-toggle"
+                                                type="button"
+                                                aria-label="Mostrar senha"
+                                                aria-pressed="false"
+                                                data-password-toggle="senha">
+                                            Mostrar
+                                        </button>
+                                    </div>
+                                    <p class="field-help">Usa apenas se quiseres substituir a senha atual.</p>
+                                </div>
+
+                                <div class="field-group">
+                                    <label for="confirmarSenha">Confirmar nova senha</label>
+                                    <div class="input-control password-field">
+                                        <input id="confirmarSenha"
+                                               name="confirmarSenha"
+                                               type="password"
+                                               placeholder="Repetir nova senha"
+                                               autocomplete="new-password" />
+
+                                        <button class="password-toggle"
+                                                type="button"
+                                                aria-label="Mostrar senha"
+                                                aria-pressed="false"
+                                                data-password-toggle="confirmarSenha">
+                                            Mostrar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <a class="button button-secondary" th:href="@{/listagem}" href="/listagem">
+                                    Cancelar
+                                </a>
+
+                                <button class="button button-primary" type="submit">
+                                    Guardar alterações
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <aside class="side-card" aria-label="Resumo do utilizador">
+                        <div class="user-summary">
+                            <div class="avatar"
+                                 aria-hidden="true"
+                                 th:text="${utilizador.nome != null and #strings.length(utilizador.nome) > 0 ? #strings.substring(utilizador.nome,0,1) : 'U'}">
+                                U
+                            </div>
+
+                            <h3 th:text="${utilizador.nome}">Nome do utilizador</h3>
+                            <p th:text="${utilizador.email}">utilizador@clinica.pt</p>
+                        </div>
+
+                        <ul class="summary-list">
+                            <li>
+                                <span>Perfil</span>
+                                <strong th:text="${utilizador.tipo}">ADMIN</strong>
+                            </li>
+
+                            <li>
+                                <span>Telefone</span>
+                                <strong th:text="${utilizador.telefone}">912 345 678</strong>
+                            </li>
+
+                            <li>
+                                <span>ID</span>
+                                <strong th:text="${utilizador.id}">1</strong>
+                            </li>
+                        </ul>
+
+                        <div class="danger-zone">
+                            <h4>Zona de atenção</h4>
+                            <p>Remove utilizadores apenas quando tiveres a certeza de que já não precisam de acesso.</p>
+                        </div>
+                    </aside>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script th:src="@{/js/script.js}" src="/js/script.js"></script>
+</body>
+</html>

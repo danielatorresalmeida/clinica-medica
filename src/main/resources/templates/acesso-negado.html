@@ -1,32 +1,45 @@
 <!DOCTYPE html>
-
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Acesso Negado</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acesso Negado | Clínica Médica</title>
 
-    <!-- Ligação ao CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/acesso-negado.css}" href="/css/acesso-negado.css" />
 </head>
 
 <body>
-    <main>
+    <div class="page-shell">
+        <span class="decor decor-top-right" aria-hidden="true"></span>
+        <span class="decor decor-bottom-left" aria-hidden="true"></span>
 
-        <header>
-            <h1>Acesso Negado</h1>
-            <p>Não tem permissão para aceder a esta página.</p>
-        </header>
+        <main class="access-layout">
+            <section class="access-card">
+                <div class="brand-logo" aria-hidden="true">
+                    <span class="medical-cross vertical"></span>
+                    <span class="medical-cross horizontal"></span>
+                </div>
 
-        <section class="cartão">
-            <button type="button" onclick="window.location.href='/'">
-                Voltar à Página Principal
-            </button>
+                <p class="eyebrow">Acesso negado</p>
 
-            <button type="button" onclick="window.location.href='/logout'">
-                Logout
-            </button>
-        </section>
+                <h1>Não tem permissão para aceder a esta página.</h1>
 
-    </main>
+                <p class="description">
+                    O seu perfil de utilizador não permite consultar ou alterar esta área do sistema.
+                    Volte para a página principal e escolha uma opção disponível para o seu perfil.
+                </p>
+
+                <div class="actions">
+                    <a class="primary-button" th:href="@{/home}" href="/home">
+                        Voltar à página principal
+                    </a>
+
+                    <a class="secondary-button" th:href="@{/logout}" href="/logout">
+                        Terminar sessão
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
 </body>
 </html>
