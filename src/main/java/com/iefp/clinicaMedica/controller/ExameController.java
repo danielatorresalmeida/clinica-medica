@@ -46,33 +46,55 @@ public class ExameController {
         }
 
         String tipo = utilizador.getTipo();
-
         model.addAttribute("tipoUtilizador", tipo);
 
-        // Secretária vê todos os exames e todas as consultas
-        if (tipo.equals("SECRETARIA")) {
+        if (tipo.equals("ADMIN") || tipo.equals("SECRETARIA")) {
             model.addAttribute("exames", exameService.listarTodos());
-            model.addAttribute("consultas", consultaRepository.findAll());
             return "exames";
         }
 
-        // Médico vê apenas exames associados a ele
         if (tipo.equals("MEDICO")) {
             Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
                     .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
 
             model.addAttribute("exames", exameService.listarPorMedico(medico.getId()));
-            model.addAttribute("consultas", consultaRepository.findByMedico_IdOrderByDataAscHoraInicioAsc(medico.getId()));
             return "exames";
         }
 
-        // Paciente vê apenas os seus exames
         if (tipo.equals("PACIENTE")) {
             Paciente paciente = pacienteRepository.findByUtilizador_Id(utilizador.getId())
                     .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
 
             model.addAttribute("exames", exameService.listarPorPaciente(paciente.getId()));
             return "exames";
+        }
+
+        return "redirect:/acesso-negado";
+    }
+
+    @GetMapping("/exames/novo")
+    public String mostrarNovoExame(Model model, HttpSession session) {
+
+        Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
+
+        if (utilizador == null) {
+            return "redirect:/login";
+        }
+
+        String tipo = utilizador.getTipo();
+        model.addAttribute("tipoUtilizador", tipo);
+
+        if (tipo.equals("ADMIN") || tipo.equals("SECRETARIA")) {
+            model.addAttribute("consultas", consultaRepository.findAll());
+            return "novo-exame";
+        }
+
+        if (tipo.equals("MEDICO")) {
+            Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
+                    .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
+
+            model.addAttribute("consultas", consultaRepository.findByMedico_IdOrderByDataAscHoraInicioAsc(medico.getId()));
+            return "novo-exame";
         }
 
         return "redirect:/acesso-negado";
@@ -93,16 +115,22 @@ public class ExameController {
                 return "redirect:/login";
             }
 
-            // Paciente não pode criar exames
-            if (utilizador.getTipo().equals("PACIENTE")) {
+            String tipoUtilizador = utilizador.getTipo();
+
+            if (tipoUtilizador.equals("PACIENTE")) {
+                return "redirect:/acesso-negado";
+            }
+
+            if (!tipoUtilizador.equals("ADMIN")
+                    && !tipoUtilizador.equals("SECRETARIA")
+                    && !tipoUtilizador.equals("MEDICO")) {
                 return "redirect:/acesso-negado";
             }
 
             Consulta consulta = consultaRepository.findById(consultaId)
                     .orElseThrow(() -> new RuntimeException("Consulta não encontrada."));
 
-            // Médico só pode criar exame para consulta dele
-            if (utilizador.getTipo().equals("MEDICO")) {
+            if (tipoUtilizador.equals("MEDICO")) {
                 Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
                         .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
 
@@ -111,14 +139,13 @@ public class ExameController {
                 }
             }
 
-            // Secretária pode criar para qualquer consulta
             exameService.criarExame(consultaId, tipo, descricao);
 
             return "redirect:/exames";
 
         } catch (RuntimeException erro) {
             redirectAttributes.addFlashAttribute("erro", erro.getMessage());
-            return "redirect:/exames";
+            return "redirect:/exames/novo";
         }
     }
 }

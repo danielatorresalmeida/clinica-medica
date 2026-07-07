@@ -46,33 +46,55 @@ public class ReceitaController {
         }
 
         String tipo = utilizador.getTipo();
-
         model.addAttribute("tipoUtilizador", tipo);
 
-        // Secretária vê todas as receitas e todas as consultas
-        if (tipo.equals("SECRETARIA")) {
+        if (tipo.equals("ADMIN") || tipo.equals("SECRETARIA")) {
             model.addAttribute("receitas", receitaService.listarTodas());
-            model.addAttribute("consultas", consultaRepository.findAll());
             return "receitas";
         }
 
-        // Médico vê apenas receitas associadas a ele
         if (tipo.equals("MEDICO")) {
             Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
                     .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
 
             model.addAttribute("receitas", receitaService.listarPorMedico(medico.getId()));
-            model.addAttribute("consultas", consultaRepository.findByMedico_IdOrderByDataAscHoraInicioAsc(medico.getId()));
             return "receitas";
         }
 
-        // Paciente vê apenas as suas receitas
         if (tipo.equals("PACIENTE")) {
             Paciente paciente = pacienteRepository.findByUtilizador_Id(utilizador.getId())
                     .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
 
             model.addAttribute("receitas", receitaService.listarPorPaciente(paciente.getId()));
             return "receitas";
+        }
+
+        return "redirect:/acesso-negado";
+    }
+
+    @GetMapping("/receitas/nova")
+    public String mostrarNovaReceita(Model model, HttpSession session) {
+
+        Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
+
+        if (utilizador == null) {
+            return "redirect:/login";
+        }
+
+        String tipo = utilizador.getTipo();
+        model.addAttribute("tipoUtilizador", tipo);
+
+        if (tipo.equals("ADMIN") || tipo.equals("SECRETARIA")) {
+            model.addAttribute("consultas", consultaRepository.findAll());
+            return "nova-receita";
+        }
+
+        if (tipo.equals("MEDICO")) {
+            Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
+                    .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
+
+            model.addAttribute("consultas", consultaRepository.findByMedico_IdOrderByDataAscHoraInicioAsc(medico.getId()));
+            return "nova-receita";
         }
 
         return "redirect:/acesso-negado";
@@ -94,16 +116,20 @@ public class ReceitaController {
                 return "redirect:/login";
             }
 
-            // Paciente não pode criar receitas
-            if (utilizador.getTipo().equals("PACIENTE")) {
+            String tipo = utilizador.getTipo();
+
+            if (tipo.equals("PACIENTE")) {
+                return "redirect:/acesso-negado";
+            }
+
+            if (!tipo.equals("ADMIN") && !tipo.equals("SECRETARIA") && !tipo.equals("MEDICO")) {
                 return "redirect:/acesso-negado";
             }
 
             Consulta consulta = consultaRepository.findById(consultaId)
                     .orElseThrow(() -> new RuntimeException("Consulta não encontrada."));
 
-            // Médico só pode criar receita para consulta dele
-            if (utilizador.getTipo().equals("MEDICO")) {
+            if (tipo.equals("MEDICO")) {
                 Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
                         .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
 
@@ -112,14 +138,13 @@ public class ReceitaController {
                 }
             }
 
-            // Secretária pode criar para qualquer consulta
             receitaService.criarReceita(consultaId, medicamento, dosagem, instrucoes);
 
             return "redirect:/receitas";
 
         } catch (RuntimeException erro) {
             redirectAttributes.addFlashAttribute("erro", erro.getMessage());
-            return "redirect:/receitas";
+            return "redirect:/receitas/nova";
         }
     }
 }

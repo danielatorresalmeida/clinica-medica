@@ -34,7 +34,7 @@ public class DisponibilidadeController {
     }
 
     @GetMapping("/disponibilidades")
-    public String listarDisponibilidade(Model model, HttpSession session) {
+    public String listarDisponibilidades(Model model, HttpSession session) {
 
         Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
 
@@ -43,17 +43,13 @@ public class DisponibilidadeController {
         }
 
         String tipo = utilizador.getTipo();
-
         model.addAttribute("tipoUtilizador", tipo);
 
-        // Secretária vê todas as disponibilidades e pode escolher qualquer médico
-        if (tipo.equals("SECRETARIA")) {
+        if (tipo.equals("ADMIN") || tipo.equals("SECRETARIA")) {
             model.addAttribute("disponibilidades", disponibilidadeService.listarTodas());
-            model.addAttribute("medicos", listagemService.listarMedicos());
             return "disponibilidades";
         }
 
-        // Médico vê apenas as suas disponibilidades
         if (tipo.equals("MEDICO")) {
             Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
                     .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
@@ -62,7 +58,30 @@ public class DisponibilidadeController {
             return "disponibilidades";
         }
 
-        // Paciente não gere disponibilidades
+        return "redirect:/acesso-negado";
+    }
+
+    @GetMapping("/disponibilidades/nova")
+    public String mostrarNovaDisponibilidade(Model model, HttpSession session) {
+
+        Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
+
+        if (utilizador == null) {
+            return "redirect:/login";
+        }
+
+        String tipo = utilizador.getTipo();
+        model.addAttribute("tipoUtilizador", tipo);
+
+        if (tipo.equals("ADMIN") || tipo.equals("SECRETARIA")) {
+            model.addAttribute("medicos", listagemService.listarMedicos());
+            return "nova-disponibilidade";
+        }
+
+        if (tipo.equals("MEDICO")) {
+            return "nova-disponibilidade";
+        }
+
         return "redirect:/acesso-negado";
     }
 
@@ -82,8 +101,9 @@ public class DisponibilidadeController {
                 return "redirect:/login";
             }
 
-            // Secretária pode criar disponibilidade para qualquer médico
-            if (utilizador.getTipo().equals("SECRETARIA")) {
+            String tipo = utilizador.getTipo();
+
+            if (tipo.equals("ADMIN") || tipo.equals("SECRETARIA")) {
 
                 if (medicoId == null) {
                     throw new RuntimeException("Selecione um médico.");
@@ -99,8 +119,7 @@ public class DisponibilidadeController {
                 return "redirect:/disponibilidades";
             }
 
-            // Médico só pode criar disponibilidade para si próprio
-            if (utilizador.getTipo().equals("MEDICO")) {
+            if (tipo.equals("MEDICO")) {
                 Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
                         .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
 
@@ -118,7 +137,7 @@ public class DisponibilidadeController {
 
         } catch (RuntimeException erro) {
             redirectAttributes.addFlashAttribute("erro", erro.getMessage());
-            return "redirect:/disponibilidades";
+            return "redirect:/disponibilidades/nova";
         }
     }
 }

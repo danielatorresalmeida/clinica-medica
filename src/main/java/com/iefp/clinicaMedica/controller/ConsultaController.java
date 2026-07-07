@@ -41,18 +41,13 @@ public class ConsultaController {
         }
 
         String tipo = utilizador.getTipo();
-
         model.addAttribute("tipoUtilizador", tipo);
 
-        // Secretária vê todas as consultas e pode marcar para qualquer paciente
-        if (tipo.equals("SECRETARIA")) {
+        if (tipo.equals("ADMIN") || tipo.equals("SECRETARIA")) {
             model.addAttribute("consultas", consultaService.listarTodas());
-            model.addAttribute("pacientes", consultaService.listarPacientes());
-            model.addAttribute("disponibilidadesLivres", consultaService.listarDisponibilidadesLivres());
             return "consultas";
         }
 
-        // Médico vê apenas as suas consultas
         if (tipo.equals("MEDICO")) {
             Medico medico = medicoRepository.findByUtilizador_Id(utilizador.getId())
                     .orElseThrow(() -> new RuntimeException("Médico não encontrado."));
@@ -61,14 +56,38 @@ public class ConsultaController {
             return "consultas";
         }
 
-        // Paciente vê apenas as suas consultas e pode marcar consulta para si próprio
         if (tipo.equals("PACIENTE")) {
             Paciente paciente = pacienteRepository.findByUtilizador_Id(utilizador.getId())
                     .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
 
             model.addAttribute("consultas", consultaService.listarPorPaciente(paciente.getId()));
-            model.addAttribute("disponibilidadesLivres", consultaService.listarDisponibilidadesLivres());
             return "consultas";
+        }
+
+        return "redirect:/acesso-negado";
+    }
+
+    @GetMapping("/consultas/nova")
+    public String mostrarNovaConsulta(Model model, HttpSession session) {
+
+        Utilizador utilizador = (Utilizador) session.getAttribute("utilizadorLogado");
+
+        if (utilizador == null) {
+            return "redirect:/login";
+        }
+
+        String tipo = utilizador.getTipo();
+        model.addAttribute("tipoUtilizador", tipo);
+
+        if (tipo.equals("ADMIN") || tipo.equals("SECRETARIA")) {
+            model.addAttribute("pacientes", consultaService.listarPacientes());
+            model.addAttribute("disponibilidadesLivres", consultaService.listarDisponibilidadesLivres());
+            return "nova-consulta";
+        }
+
+        if (tipo.equals("PACIENTE")) {
+            model.addAttribute("disponibilidadesLivres", consultaService.listarDisponibilidadesLivres());
+            return "nova-consulta";
         }
 
         return "redirect:/acesso-negado";
@@ -88,8 +107,9 @@ public class ConsultaController {
                 return "redirect:/login";
             }
 
-            // Paciente marca consulta apenas para si próprio
-            if (utilizador.getTipo().equals("PACIENTE")) {
+            String tipo = utilizador.getTipo();
+
+            if (tipo.equals("PACIENTE")) {
                 Paciente paciente = pacienteRepository.findByUtilizador_Id(utilizador.getId())
                         .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
 
@@ -97,18 +117,20 @@ public class ConsultaController {
                 return "redirect:/consultas";
             }
 
-            // Secretária pode escolher qualquer paciente
-            if (utilizador.getTipo().equals("SECRETARIA")) {
+            if (tipo.equals("ADMIN") || tipo.equals("SECRETARIA")) {
+                if (pacienteId == null) {
+                    throw new RuntimeException("Selecione um paciente.");
+                }
+
                 consultaService.marcarConsulta(pacienteId, disponibilidadeId);
                 return "redirect:/consultas";
             }
 
-            // Médico não marca consulta neste fluxo
             return "redirect:/acesso-negado";
 
         } catch (RuntimeException erro) {
             redirectAttributes.addFlashAttribute("erro", erro.getMessage());
-            return "redirect:/consultas";
+            return "redirect:/consultas/nova";
         }
     }
 }
