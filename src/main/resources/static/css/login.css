@@ -195,12 +195,25 @@
       line-height: 1.45;
     }
 
+    .form-intro {
+      margin-bottom: 24px;
+    }
+
+    body[data-login-error="true"] .form-intro,
+    .login-card.is-error .form-intro {
+      margin-bottom: 0;
+    }
+
+    .form-intro + .error-box + .field-group {
+      margin-top: 0;
+    }
+
     .error-box {
-      display: flex;
+      display: none;
       align-items: center;
       width: 100%;
       min-height: 38px;
-      margin: 18px 0 14px;
+      margin: 18px 0 20px;
       padding: 8px 11px;
       border: 1px solid var(--color-error-border);
       border-radius: 9px;
@@ -209,15 +222,12 @@
       font-size: 13.5px;
       font-weight: 700;
       line-height: 1.25;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 160ms ease, visibility 160ms ease;
+    
     }
 
     body[data-login-error="true"] .error-box,
     .login-card.is-error .error-box {
-      visibility: visible;
-      opacity: 1;
+      display: flex;
     }
 
     .error-icon {
@@ -237,7 +247,7 @@
     }
 
     .field-group {
-      margin-top: 16px;
+      margin-top: 18px;
     }
 
     .field-group label {
